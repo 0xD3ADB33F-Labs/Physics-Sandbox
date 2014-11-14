@@ -3,20 +3,20 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="src" path="/Physics_Sandbox-core"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-backend-lwjgl.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-backend-lwjgl-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-natives.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-backend-lwjgl-1.4.1.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-backend-lwjgl-1.4.1-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-platform-1.4.1-natives-desktop.jar"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet-natives.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-1.4.1-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-bullet/1.4.1/f85e33580e03df56144bcbdc3c7e3230acf0ae19/gdx-bullet-1.4.1-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl-2.9.1.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl/2.9.1/ccedb5b6f96913c6f78bc10249e747ded90baa51/lwjgl-2.9.1-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl_util-2.9.1.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/org.lwjgl.lwjgl/lwjgl_util/2.9.1/9f350d8a760247f2ae88e996b55f8f7121346c79/lwjgl_util-2.9.1-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jlayer-1.0.1-gdx.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/com.badlogicgames.jlayer/jlayer/1.0.1-gdx/f1c4ffebc5e4f68be914404faab580c20de8ea1f/jlayer-1.0.1-gdx-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jorbis-0.0.17.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/org.jcraft/jorbis/0.0.17/5446be5d62e4c6b347c8e6cd28dc00a936417ba2/jorbis-0.0.17-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-1.4.1.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-1.4.1-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet-1.4.1-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl-2.9.1.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl-2.9.1-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl_util-2.9.1.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl_util-2.9.1-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jlayer-1.0.1-gdx.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jlayer-1.0.1-gdx-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jorbis-0.0.17.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jorbis-0.0.17-sources.jar"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl-platform-2.9.1-natives-windows.jar"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl-platform-2.9.1-natives-linux.jar"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/lwjgl-platform-2.9.1-natives-osx.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jinput-2.0.5.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/net.java.jinput/jinput/2.0.5/82604cfeb87b9ab70ed70aa19a137de8ceb21504/jinput-2.0.5-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jutils-1.0.0.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/net.java.jutils/jutils/1.0.0/d18678a00b216863206a1bb6190507e02a32971b/jutils-1.0.0-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jinput-2.0.5.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jinput-2.0.5-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jutils-1.0.0.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jutils-1.0.0-sources.jar"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jinput-platform-2.0.5-natives-linux.jar"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jinput-platform-2.0.5-natives-windows.jar"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/jinput-platform-2.0.5-natives-osx.jar"/>

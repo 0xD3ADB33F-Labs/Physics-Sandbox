@@ -2,7 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx/1.4.1/a36f5d3e6a3b0fa3c625f8ce88216daf99435bce/gdx-1.4.1-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet.jar" sourcepath="C:/Users/17611/.gradle/caches/modules-2/files-2.1/com.badlogicgames.gdx/gdx-bullet/1.4.1/f85e33580e03df56144bcbdc3c7e3230acf0ae19/gdx-bullet-1.4.1-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-1.4.1-sources.jar"/>
+	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet-1.4.1-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
