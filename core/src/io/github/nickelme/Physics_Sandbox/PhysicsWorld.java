@@ -12,6 +12,7 @@ public class PhysicsWorld {
 	
 	private btDiscreteDynamicsWorld dynworld;
 	private btSequentialImpulseConstraintSolver solver;
+	private float stepSpeed = 1.0f;
 	
 	public PhysicsWorld(){
 		btBroadphaseInterface broadphase = new btDbvtBroadphase();
@@ -28,7 +29,16 @@ public class PhysicsWorld {
 	}
 	
 	public void Stimulate(float deltatime){
-		dynworld.stepSimulation(deltatime);
+		dynworld.stepSimulation(deltatime * stepSpeed);
+	}
+	
+	public float getStepSpeed(){
+		return stepSpeed;
+	}
+	
+	public void setStepSpeed(float newSpeed){
+		stepSpeed = newSpeed;
+		System.out.println("Step Speed: " + stepSpeed);
 	}
 
 }

@@ -6,6 +6,8 @@ import java.util.Vector;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -34,13 +36,61 @@ import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 
 public class PhysicsSandboxGame extends ApplicationAdapter {
 	
-	FirstPersonCameraController fpcontrol;
-	PerspectiveCamera cam;
-	ModelBatch modelBatch;
-	List<PSObject> Objects = new ArrayList<PSObject>();
-	PhysicsWorld world;
-	Long lasttick;
-	Environment env;
+	private FirstPersonCameraController fpcontrol;
+	private PerspectiveCamera cam;
+	private ModelBatch modelBatch;
+	private List<PSObject> Objects = new ArrayList<PSObject>();
+	private PhysicsWorld world;
+	private Long lasttick;
+	private Environment env;
+	private PhysicUserInput physin;
+	private InputMultiplexer inplex;
+	
+	@Override
+	public void create () {
+		Bullet.init();
+		modelBatch = new ModelBatch();
+		
+		cam = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        cam.position.set(10f, 0f, 10f);
+        cam.lookAt(0,0,0);
+        cam.near = 1f;
+        cam.far = 1000f;
+        cam.update(true);
+        
+       
+        
+        world = new PhysicsWorld();
+        Floor floor = new Floor(new Vector3(1000,1,1000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
+        floor.SetColor(Color.WHITE);
+        Objects.add(floor);
+        world.AddObject(floor);
+        for(int x = 0; x < 20; x++){
+        	for(int y=0; y < 20; y++){
+        		PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),0), new Quaternion(), new Vector3(1,1,1)));
+        		Objects.add(cube);
+        		world.AddObject(cube);
+        	}
+        }
+        
+        inplex = new InputMultiplexer();
+        
+        physin = new PhysicUserInput(this);
+        inplex.addProcessor(physin);
+        
+        fpcontrol = new FirstPersonCameraController(cam);
+        fpcontrol.setVelocity(20.0f);
+        inplex.addProcessor(fpcontrol);
+        
+        Gdx.input.setInputProcessor(inplex);
+		
+		env = new Environment();
+		env.set(new ColorAttribute(ColorAttribute.AmbientLight, new Color(0.5f,0.5f,0.5f, 1.0f)));
+		env.add(new DirectionalLight().set(Color.WHITE, new Vector3(0,-90, 0)));
+		
+		lasttick = System.currentTimeMillis();
+
+	}
 	
 	@Override
 	public void resize(int width, int height) {
@@ -48,42 +98,12 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		cam.viewportWidth = height;
 		cam.update(true);
 	};
-	
-	@Override
-	public void create () {
-		Bullet.init();
-		modelBatch = new ModelBatch();
-		cam = new PerspectiveCamera(60, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		fpcontrol = new FirstPersonCameraController(cam);
-        cam.position.set(10f, 0f, 10f);
-        cam.lookAt(0,0,0);
-        cam.near = 1f;
-        cam.far = 300f;
-        cam.update();
-        world = new PhysicsWorld();
-        Floor floor = new Floor(new Vector3(1000,1,1000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
-        floor.SetColor(Color.WHITE);
-        Objects.add(floor);
-        world.AddObject(floor);
-        for(int i = 0; i < 20; i++){
-        	PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(0,i*25,0), new Quaternion(), new Vector3(1,1,1)));
-        	Objects.add(cube);
-        	world.AddObject(cube);
-        }
-		Gdx.input.setInputProcessor(fpcontrol);
-		lasttick = System.currentTimeMillis();
-		env = new Environment();
-		env.set(new ColorAttribute(ColorAttribute.AmbientLight, new Color(0.5f,0.5f,0.5f, 1.0f)));
-		env.add(new DirectionalLight().set(Color.WHITE, new Vector3(0,-90, 0)));
-
-	}
 
 	@Override
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		float delta = ((float)(System.currentTimeMillis() - lasttick))/1000.0f;
-		System.out.println(delta);
 		world.Stimulate(delta);
 		for(int i = 0; i<Objects.size(); i++){
 			Objects.get(i).Update();
@@ -102,6 +122,25 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
     @Override
     public void dispose () {
         modelBatch.dispose();
+    }
+    
+    public void increasePhysicsStepSpeed(){
+    	world.setStepSpeed(world.getStepSpeed() + 0.25f);
+    }
+    
+    public void decreasePhysicsStepSpeed(){
+    	if(world.getStepSpeed() > 0.0f){
+    		world.setStepSpeed(world.getStepSpeed() - 0.25f);
+    	}
+    }
+    
+    public Camera getCamera(){
+    	return cam;
+    }
+    
+    public void addObject(PSObject obj){
+    	Objects.add(obj);
+    	world.AddObject(obj);
     }
 }
 

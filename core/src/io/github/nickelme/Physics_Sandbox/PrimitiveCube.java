@@ -21,11 +21,11 @@ import com.badlogic.gdx.utils.Pool;
 
 public class PrimitiveCube extends PSObject {
 
-	Model rendercube;
-	ModelInstance instance;
-	btRigidBody rigidbody;
-	Matrix4 worldTransform;
-	Vector3 boxExtent;
+	protected Model rendercube;
+	protected ModelInstance instance;
+	protected btRigidBody rigidbody;
+	protected Matrix4 worldTransform;
+	protected Vector3 boxExtent;
 	
 	public PrimitiveCube(Vector3 size, Matrix4 transform) {
 		boxExtent = size;
@@ -51,7 +51,7 @@ public class PrimitiveCube extends PSObject {
 		if(rigidbody == null){
 			btCollisionShape fallShape = new btBoxShape(boxExtent);
 			btDefaultMotionState fallMotionState = new btDefaultMotionState(worldTransform);
-	        float mass = 1;
+	        float mass = boxExtent.x * boxExtent.y * boxExtent.z;
 	        Vector3 fallInertia = new Vector3(0, 0, 0);
 	        fallShape.calculateLocalInertia(mass, fallInertia);
 	        btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(mass, fallMotionState, fallShape, fallInertia);
@@ -69,6 +69,22 @@ public class PrimitiveCube extends PSObject {
 	public void Update() {
 		rigidbody.getMotionState().getWorldTransform(instance.transform);
 		instance.transform.scale(2.0f, 2, 2);
+		worldTransform.set(instance.transform);
 	}
+
+	@Override
+	public void setLocation(Vector3 location) {
+		worldTransform.setTranslation(location);
+		rigidbody.setWorldTransform(worldTransform);
+		instance.transform.set(worldTransform);
+		
+	}
+
+	@Override
+	public void setVelocity(Vector3 vel) {
+		rigidbody.setLinearVelocity(vel);
+		
+	}
+	
 
 }
