@@ -13,11 +13,14 @@ public class PhysicsWorld {
 	private btDiscreteDynamicsWorld dynworld;
 	private btSequentialImpulseConstraintSolver solver;
 	private float stepSpeed = 1.0f;
+	private btBroadphaseInterface broadphase;
+	private btDefaultCollisionConfiguration collisionConfiguration;
+	private btCollisionDispatcher dispatcher;
 	
 	public PhysicsWorld(){
-		btBroadphaseInterface broadphase = new btDbvtBroadphase();
-		btDefaultCollisionConfiguration collisionConfiguration = new btDefaultCollisionConfiguration();
-		btCollisionDispatcher dispatcher = new btCollisionDispatcher(collisionConfiguration);
+		broadphase = new btDbvtBroadphase();
+		collisionConfiguration = new btDefaultCollisionConfiguration();
+		dispatcher = new btCollisionDispatcher(collisionConfiguration);
 		solver = new btSequentialImpulseConstraintSolver();
 		dynworld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 		dynworld.setGravity(new Vector3(0,-10,0));

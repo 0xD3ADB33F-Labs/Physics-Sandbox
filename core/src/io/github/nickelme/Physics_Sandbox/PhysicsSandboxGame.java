@@ -35,7 +35,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstruct
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 
 public class PhysicsSandboxGame extends ApplicationAdapter {
-	
+
 	private FirstPersonCameraController fpcontrol;
 	private PerspectiveCamera cam;
 	private ModelBatch modelBatch;
@@ -45,53 +45,55 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private Environment env;
 	private PhysicUserInput physin;
 	private InputMultiplexer inplex;
-	
+
 	@Override
 	public void create () {
 		Bullet.init();
 		modelBatch = new ModelBatch();
-		
+
 		cam = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        cam.position.set(10f, 0f, 10f);
-        cam.lookAt(0,0,0);
-        cam.near = 1f;
-        cam.far = 1000f;
-        cam.update(true);
-        
-       
-        
-        world = new PhysicsWorld();
-        Floor floor = new Floor(new Vector3(1000,1,1000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
-        floor.SetColor(Color.WHITE);
-        Objects.add(floor);
-        world.AddObject(floor);
-        for(int x = 0; x < 20; x++){
-        	for(int y=0; y < 20; y++){
-        		PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),0), new Quaternion(), new Vector3(1,1,1)));
-        		Objects.add(cube);
-        		world.AddObject(cube);
-        	}
-        }
-        
-        inplex = new InputMultiplexer();
-        
-        physin = new PhysicUserInput(this);
-        inplex.addProcessor(physin);
-        
-        fpcontrol = new FirstPersonCameraController(cam);
-        fpcontrol.setVelocity(20.0f);
-        inplex.addProcessor(fpcontrol);
-        
-        Gdx.input.setInputProcessor(inplex);
-		
+		cam.position.set(10f, 0f, 10f);
+		cam.lookAt(0,0,0);
+		cam.near = 1f;
+		cam.far = 1000f;
+		cam.update(true);
+
+
+
+		world = new PhysicsWorld();
+		Floor floor = new Floor(new Vector3(1000,1,1000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
+		floor.SetColor(Color.WHITE);
+		Objects.add(floor);
+		world.AddObject(floor);
+		for(int x = 0; x < 10; x++){
+			for(int y=0; y < 10; y++){
+				for(int z=0; z<5; z++){
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),z*10), new Quaternion(), new Vector3(1,1,1)));
+					Objects.add(cube);
+					world.AddObject(cube);
+				}
+			}
+		}
+
+		inplex = new InputMultiplexer();
+
+		physin = new PhysicUserInput(this);
+		inplex.addProcessor(physin);
+
+		fpcontrol = new FirstPersonCameraController(cam);
+		fpcontrol.setVelocity(20.0f);
+		inplex.addProcessor(fpcontrol);
+
+		Gdx.input.setInputProcessor(inplex);
+
 		env = new Environment();
 		env.set(new ColorAttribute(ColorAttribute.AmbientLight, new Color(0.5f,0.5f,0.5f, 1.0f)));
 		env.add(new DirectionalLight().set(Color.WHITE, new Vector3(0,-90, 0)));
-		
+
 		lasttick = System.currentTimeMillis();
 
 	}
-	
+
 	@Override
 	public void resize(int width, int height) {
 		cam.viewportWidth = width;
@@ -110,7 +112,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 		fpcontrol.update();
 		cam.update();
-		
+
 		modelBatch.begin(cam);
 		for(int i = 0; i <Objects.size(); i++){
 			modelBatch.render(Objects.get(i), env);
@@ -118,30 +120,30 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		modelBatch.end();
 		lasttick = System.currentTimeMillis();
 	}
-	
-    @Override
-    public void dispose () {
-        modelBatch.dispose();
-    }
-    
-    public void increasePhysicsStepSpeed(){
-    	world.setStepSpeed(world.getStepSpeed() + 0.25f);
-    }
-    
-    public void decreasePhysicsStepSpeed(){
-    	if(world.getStepSpeed() > 0.0f){
-    		world.setStepSpeed(world.getStepSpeed() - 0.25f);
-    	}
-    }
-    
-    public Camera getCamera(){
-    	return cam;
-    }
-    
-    public void addObject(PSObject obj){
-    	Objects.add(obj);
-    	world.AddObject(obj);
-    }
+
+	@Override
+	public void dispose () {
+		modelBatch.dispose();
+	}
+
+	public void increasePhysicsStepSpeed(){
+		world.setStepSpeed(world.getStepSpeed() + 0.25f);
+	}
+
+	public void decreasePhysicsStepSpeed(){
+		if(world.getStepSpeed() > 0.0f){
+			world.setStepSpeed(world.getStepSpeed() - 0.25f);
+		}
+	}
+
+	public Camera getCamera(){
+		return cam;
+	}
+
+	public void addObject(PSObject obj){
+		Objects.add(obj);
+		world.AddObject(obj);
+	}
 }
 
 
@@ -152,16 +154,16 @@ class Floor extends PrimitiveCube{
 		super(size, transform);
 		// TODO Auto-generated constructor stub
 	}
-	
+
 	@Override
 	public btRigidBody getRigidBody() {
 		if(rigidbody == null){
 			btCollisionShape groundShape = new btStaticPlaneShape(new Vector3(0, 1, 0), 1);
 			btDefaultMotionState fallMotionState = new btDefaultMotionState(worldTransform);
-	        btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(0, fallMotionState, groundShape, new Vector3(0,0,0));
-	        rigidbody = new btRigidBody(fallRigidBodyCI);
+			btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(0, fallMotionState, groundShape, new Vector3(0,0,0));
+			rigidbody = new btRigidBody(fallRigidBodyCI);
 		}
 		return rigidbody;
 	}
-	
+
 }

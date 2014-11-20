@@ -56,6 +56,7 @@ public class PrimitiveCube extends PSObject {
 	        fallShape.calculateLocalInertia(mass, fallInertia);
 	        btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(mass, fallMotionState, fallShape, fallInertia);
 	        rigidbody = new btRigidBody(fallRigidBodyCI);
+	        //fallRigidBodyCI.dispose();
 		}
 		return rigidbody;
 	}
