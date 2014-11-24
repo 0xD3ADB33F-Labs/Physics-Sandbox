@@ -21,6 +21,7 @@ import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.particles.batches.BillboardParticleBatch.Config;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
@@ -33,24 +34,36 @@ import com.badlogic.gdx.physics.bullet.collision.btStaticPlaneShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class PhysicsSandboxGame extends ApplicationAdapter {
 
 	private FirstPersonCameraController fpcontrol;
 	private PerspectiveCamera cam;
 	private ModelBatch modelBatch;
+	private SpriteBatch spriteBatch;
 	private List<PSObject> Objects = new ArrayList<PSObject>();
 	private PhysicsWorld world;
 	private Long lasttick;
 	private Environment env;
 	private PhysicUserInput physin;
 	private InputMultiplexer inplex;
+	private Skin skin;
+	private Stage stage;
 
 	@Override
 	public void create () {
 		Bullet.init();
 		modelBatch = new ModelBatch();
-
+		
+		spriteBatch = new SpriteBatch();
+		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
+		stage = new Stage();
+		
 		cam = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 0f, 10f);
 		cam.lookAt(0,0,0);
@@ -91,7 +104,49 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		env.add(new DirectionalLight().set(Color.WHITE, new Vector3(0,-90, 0)));
 
 		lasttick = System.currentTimeMillis();
-
+		
+		
+		
+		final TextButton increaseButton = new TextButton("Step speed +", skin, "default");
+		final TextButton decreaseButton = new TextButton("Step speed -", skin, "default");
+		final TextButton resetButton = new TextButton("Reset step speed", skin, "default");
+		
+		
+		increaseButton.setWidth(150f);
+		increaseButton.setHeight(30f);
+		increaseButton.setPosition(800f, 50f);
+		
+		decreaseButton.setWidth(150f);
+		decreaseButton.setHeight(30f);
+		decreaseButton.setPosition(800f, 10f);
+		
+		resetButton.setWidth(150f);
+		resetButton.setHeight(30f);
+		resetButton.setPosition(625f, 10f);
+		
+		stage.addActor(increaseButton);
+		stage.addActor(decreaseButton);
+		stage.addActor(resetButton);
+		
+		increaseButton.addListener(new ClickListener(){
+			public void clicked(InputEvent event, float x, float y){
+				increasePhysicsStepSpeed();
+	    	}
+	     });
+		
+	    decreaseButton.addListener(new ClickListener(){
+	    	public void clicked(InputEvent event, float x, float y){
+	    		decreasePhysicsStepSpeed();
+	    	}
+	    });
+		
+	    resetButton.addListener(new ClickListener(){
+	    	public void clicked(InputEvent event, float x, float y){
+	    		world.setStepSpeed(1);
+	    	}
+	    });
+	      inplex.addProcessor(stage);
+	      Gdx.input.setInputProcessor(inplex);
 	}
 
 	@Override
@@ -119,11 +174,16 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 		modelBatch.end();
 		lasttick = System.currentTimeMillis();
+		
+		spriteBatch.begin();
+		stage.draw();
+		spriteBatch.end();
 	}
 
 	@Override
 	public void dispose () {
 		modelBatch.dispose();
+		spriteBatch.dispose();
 	}
 
 	public void increasePhysicsStepSpeed(){

@@ -24,10 +24,10 @@ public class ObjectThrower {
 		Vector3 dir = cam.unproject(screenSpace);
 		dir.nor();
 		dir.scl(throwSpeed);
-		PrimitiveSphere cube = new PrimitiveSphere(new Vector3(25.0f, 25.0f, 25.0f), new Matrix4(location, new Quaternion(), new Vector3(1,1,1)));
+		PrimitiveSphere sphere = new PrimitiveSphere(new Vector3(25.0f, 25.0f, 25.0f), new Matrix4(location, new Quaternion(), new Vector3(1,1,1)));
 		//cube.SetColor(Color.ORANGE);
-		psGame.addObject(cube);
-		cube.setVelocity(dir);
+		psGame.addObject(sphere);
+		sphere.setVelocity(dir);
 	}
 
 }
