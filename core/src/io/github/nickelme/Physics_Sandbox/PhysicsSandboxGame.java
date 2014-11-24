@@ -39,6 +39,7 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.sun.xml.internal.ws.api.streaming.XMLStreamReaderFactory.Default;
 
 public class PhysicsSandboxGame extends ApplicationAdapter {
 
@@ -54,7 +55,8 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private InputMultiplexer inplex;
 	private Skin skin;
 	private Stage stage;
-
+	
+	
 	@Override
 	public void create () {
 		Bullet.init();
@@ -91,11 +93,10 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		inplex = new InputMultiplexer();
 
 		physin = new PhysicUserInput(this);
-		inplex.addProcessor(physin);
+		
 
 		fpcontrol = new FirstPersonCameraController(cam);
 		fpcontrol.setVelocity(20.0f);
-		inplex.addProcessor(fpcontrol);
 
 		Gdx.input.setInputProcessor(inplex);
 
@@ -123,7 +124,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		resetButton.setWidth(150f);
 		resetButton.setHeight(30f);
 		resetButton.setPosition(625f, 10f);
-		
+
 		stage.addActor(increaseButton);
 		stage.addActor(decreaseButton);
 		stage.addActor(resetButton);
@@ -146,6 +147,9 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	    	}
 	    });
 	      inplex.addProcessor(stage);
+	      inplex.addProcessor(physin);
+	      inplex.addProcessor(fpcontrol);
+	      
 	      Gdx.input.setInputProcessor(inplex);
 	}
 
@@ -154,6 +158,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		cam.viewportWidth = width;
 		cam.viewportWidth = height;
 		cam.update(true);
+		stage.getViewport().update(width, height, true);
 	};
 
 	@Override
