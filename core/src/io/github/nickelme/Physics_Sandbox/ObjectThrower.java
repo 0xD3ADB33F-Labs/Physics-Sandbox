@@ -2,6 +2,7 @@ package io.github.nickelme.Physics_Sandbox;
 
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -29,5 +30,18 @@ public class ObjectThrower {
 		psGame.addObject(sphere);
 		sphere.setVelocity(dir);
 	}
+	
+	public void ThrowModel(Vector3 screenSpace, Model model){
+		Camera cam = psGame.getCamera();
+		Vector3 location = cam.position;
+		Vector3 dir = cam.unproject(screenSpace);
+		dir.nor();
+		dir.scl(throwSpeed);
+		ModelObject sphere = new ModelObject(model, new Matrix4(location, new Quaternion(), new Vector3(5,5,5)));
+		//cube.SetColor(Color.ORANGE);
+		psGame.addObject(sphere);
+		sphere.setVelocity(dir);
+	}
+	
 
 }

@@ -1,8 +1,16 @@
 package io.github.nickelme.Physics_Sandbox;
 
+import java.io.File;
+
+import javax.swing.JFileChooser;
+
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.math.Vector3;
 
 public class PhysicUserInput implements InputProcessor {
@@ -13,9 +21,16 @@ public class PhysicUserInput implements InputProcessor {
 	
 	private boolean bIsDragging = false;
 	
+	private JFileChooser filechoose;
+	
+	private boolean shootsphere = true;
+	
+	private Model modelToThrow = null;
+	
 	public PhysicUserInput(PhysicsSandboxGame curGame){
 		psGame = curGame;
 		objThrow = new ObjectThrower(psGame);
+		filechoose = new JFileChooser();
 	}
 	
 	@Override
@@ -30,6 +45,19 @@ public class PhysicUserInput implements InputProcessor {
 			psGame.decreasePhysicsStepSpeed();
 			return true;
 			
+		case Keys.L:
+			int ret = filechoose.showOpenDialog(null);
+			if(ret == JFileChooser.APPROVE_OPTION){
+				ModelLoader loader = new ObjLoader();
+		        modelToThrow = loader.loadModel(Gdx.files.absolute(filechoose.getSelectedFile().getAbsolutePath()));
+		        
+				shootsphere = false;
+			}
+			return true;
+			
+		case Keys.K:
+			shootsphere = true;
+			return true;
 		}
 		return false;
 	}
@@ -53,7 +81,11 @@ public class PhysicUserInput implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if(!bIsDragging){
-			objThrow.ThrowObject(new Vector3(screenX, screenY, 1));
+			if(shootsphere){
+				objThrow.ThrowObject(new Vector3(screenX, screenY, 1));
+			}else{
+				objThrow.ThrowModel(new Vector3(screenX, screenY, 1), modelToThrow);
+			}
 		}else{
 			bIsDragging = false;
 		}

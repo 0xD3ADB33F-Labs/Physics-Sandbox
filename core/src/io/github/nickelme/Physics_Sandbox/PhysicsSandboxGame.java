@@ -7,6 +7,7 @@ import java.util.Vector;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -55,10 +56,12 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private InputMultiplexer inplex;
 	private Skin skin;
 	private Stage stage;
+	private AssetManager assetman;
 	
 	
 	@Override
 	public void create () {
+		assetman = new AssetManager();
 		Bullet.init();
 		modelBatch = new ModelBatch();
 		
@@ -208,6 +211,10 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	public void addObject(PSObject obj){
 		Objects.add(obj);
 		world.AddObject(obj);
+	}
+	
+	public AssetManager getAssetManager(){
+		return assetman;
 	}
 }
 
