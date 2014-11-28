@@ -10,10 +10,12 @@ import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.FPSLogger;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -37,6 +39,7 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstruct
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -57,13 +60,15 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private Skin skin;
 	private Stage stage;
 	private AssetManager assetman;
-	
+	private BitmapFont font;
+	private Label fps;
 	
 	@Override
 	public void create () {
 		assetman = new AssetManager();
 		Bullet.init();
 		modelBatch = new ModelBatch();
+		
 		
 		spriteBatch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -109,12 +114,14 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 
 		lasttick = System.currentTimeMillis();
 		
-		
+		font = new BitmapFont();
+		font.setColor(Color.RED);
+		font.setScale(20f, 20f);
 		
 		final TextButton increaseButton = new TextButton("Step speed +", skin, "default");
 		final TextButton decreaseButton = new TextButton("Step speed -", skin, "default");
 		final TextButton resetButton = new TextButton("Reset step speed", skin, "default");
-		
+		fps = new Label("FPS: " + Gdx.graphics.getFramesPerSecond(), skin, "default");
 		
 		increaseButton.setWidth(150f);
 		increaseButton.setHeight(30f);
@@ -127,10 +134,17 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		resetButton.setWidth(150f);
 		resetButton.setHeight(30f);
 		resetButton.setPosition(625f, 10f);
+		
+		fps.setWidth(100f);
+		fps.setHeight(100f);
+		fps.setPosition(945f, 525f);
 
 		stage.addActor(increaseButton);
 		stage.addActor(decreaseButton);
 		stage.addActor(resetButton);
+		stage.addActor(fps);
+		
+		
 		
 		increaseButton.addListener(new ClickListener(){
 			public void clicked(InputEvent event, float x, float y){
@@ -152,8 +166,9 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	      inplex.addProcessor(stage);
 	      inplex.addProcessor(physin);
 	      inplex.addProcessor(fpcontrol);
-	      
+	     
 	      Gdx.input.setInputProcessor(inplex);
+	      
 	}
 
 	@Override
@@ -162,6 +177,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		cam.viewportWidth = height;
 		cam.update(true);
 		stage.getViewport().update(width, height, true);
+		
 	};
 
 	@Override
@@ -185,13 +201,17 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		
 		spriteBatch.begin();
 		stage.draw();
+		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		spriteBatch.end();
+		
+		
 	}
 
 	@Override
 	public void dispose () {
 		modelBatch.dispose();
 		spriteBatch.dispose();
+		font.dispose();
 	}
 
 	public void increasePhysicsStepSpeed(){

@@ -9,6 +9,7 @@ public class DesktopLauncher {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.height = 600;
 		config.width = 1000;
+		config.vSyncEnabled = true;
 		new LwjglApplication(new PhysicsSandboxGame(), config);
 	}
 }
