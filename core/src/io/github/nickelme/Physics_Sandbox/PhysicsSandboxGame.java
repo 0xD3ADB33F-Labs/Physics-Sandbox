@@ -60,8 +60,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private Skin skin;
 	private Stage stage;
 	private AssetManager assetman;
-	private BitmapFont font;
-	private Label fps;
+	private Label fps, cameraInfo;
 	
 	@Override
 	public void create () {
@@ -113,15 +112,12 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		env.add(new DirectionalLight().set(Color.WHITE, new Vector3(0,-90, 0)));
 
 		lasttick = System.currentTimeMillis();
-		
-		font = new BitmapFont();
-		font.setColor(Color.RED);
-		font.setScale(20f, 20f);
-		
+
 		final TextButton increaseButton = new TextButton("Step speed +", skin, "default");
 		final TextButton decreaseButton = new TextButton("Step speed -", skin, "default");
 		final TextButton resetButton = new TextButton("Reset step speed", skin, "default");
 		fps = new Label("FPS: " + Gdx.graphics.getFramesPerSecond(), skin, "default");
+		cameraInfo = new Label("X: " + "Y: " + "Z: ", skin, "default");
 		
 		increaseButton.setWidth(150f);
 		increaseButton.setHeight(30f);
@@ -137,12 +133,17 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		
 		fps.setWidth(100f);
 		fps.setHeight(100f);
-		fps.setPosition(945f, 525f);
+		fps.setPosition(850f, 525f);
+		
+		cameraInfo.setWidth(100f);
+		cameraInfo.setHeight(100f);
+		cameraInfo.setPosition(850f, 450f);
 
 		stage.addActor(increaseButton);
 		stage.addActor(decreaseButton);
 		stage.addActor(resetButton);
 		stage.addActor(fps);
+		stage.addActor(cameraInfo);
 		
 		
 		
@@ -202,6 +203,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		spriteBatch.begin();
 		stage.draw();
 		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
+		cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z);
 		spriteBatch.end();
 		
 		
@@ -211,7 +213,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	public void dispose () {
 		modelBatch.dispose();
 		spriteBatch.dispose();
-		font.dispose();
+
 	}
 
 	public void increasePhysicsStepSpeed(){
