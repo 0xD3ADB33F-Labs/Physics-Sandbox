@@ -31,13 +31,13 @@ public class ObjectThrower {
 		sphere.setVelocity(dir);
 	}
 	
-	public void ThrowModel(Vector3 screenSpace, Model model){
+	public void ThrowModel(Vector3 screenSpace, String model){
 		Camera cam = psGame.getCamera();
 		Vector3 location = cam.position;
 		Vector3 dir = cam.unproject(screenSpace);
 		dir.nor();
 		dir.scl(throwSpeed);
-		ModelObject sphere = new ModelObject(model, new Matrix4(location, new Quaternion(), new Vector3(5,5,5)));
+		ModelObject sphere = new ModelObject(model, new Matrix4(location, new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)));
 		//cube.SetColor(Color.ORANGE);
 		psGame.addObject(sphere);
 		sphere.setVelocity(dir);

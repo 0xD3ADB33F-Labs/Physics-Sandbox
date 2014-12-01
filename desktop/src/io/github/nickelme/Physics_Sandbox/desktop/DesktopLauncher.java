@@ -7,9 +7,10 @@ import io.github.nickelme.Physics_Sandbox.PhysicsSandboxGame;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.height = 600;
-		config.width = 1000;
-		config.vSyncEnabled = true;
+		config.height = 720;
+		config.width = 1280;
+		config.vSyncEnabled = false;
+		config.foregroundFPS = 0;
 		new LwjglApplication(new PhysicsSandboxGame(), config);
 	}
 }

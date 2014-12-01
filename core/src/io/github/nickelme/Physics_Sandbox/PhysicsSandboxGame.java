@@ -84,12 +84,12 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 
 		world = new PhysicsWorld();
 		Floor floor = new Floor(new Vector3(1000,1,1000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
-		floor.SetColor(Color.WHITE);
+		floor.SetColor(Color.PURPLE);
 		Objects.add(floor);
 		world.AddObject(floor);
 		for(int x = 0; x < 10; x++){
 			for(int y=0; y < 10; y++){
-				for(int z=0; z<5; z++){
+				for(int z=0; z<10; z++){
 					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),z*10), new Quaternion(), new Vector3(1,1,1)));
 					Objects.add(cube);
 					world.AddObject(cube);
@@ -185,8 +185,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
-		float delta = ((float)(System.currentTimeMillis() - lasttick))/1000.0f;
-		world.Stimulate(delta);
+		world.Stimulate(Gdx.graphics.getDeltaTime());
 		for(int i = 0; i<Objects.size(); i++){
 			Objects.get(i).Update();
 		}

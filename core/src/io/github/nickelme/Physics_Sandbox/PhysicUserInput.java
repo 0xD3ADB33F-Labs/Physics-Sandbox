@@ -25,7 +25,7 @@ public class PhysicUserInput implements InputProcessor {
 	
 	private boolean shootsphere = true;
 	
-	private Model modelToThrow = null;
+	private String modelToThrow = null;
 	
 	public PhysicUserInput(PhysicsSandboxGame curGame){
 		psGame = curGame;
@@ -48,8 +48,7 @@ public class PhysicUserInput implements InputProcessor {
 		case Keys.L:
 			int ret = filechoose.showOpenDialog(null);
 			if(ret == JFileChooser.APPROVE_OPTION){
-				ModelLoader loader = new ObjLoader();
-		        modelToThrow = loader.loadModel(Gdx.files.absolute(filechoose.getSelectedFile().getAbsolutePath()));
+		        modelToThrow = filechoose.getSelectedFile().getAbsolutePath();
 		        
 				shootsphere = false;
 			}
