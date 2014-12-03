@@ -41,31 +41,23 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private FirstPersonCameraController fpcontrol;
 	private PerspectiveCamera cam;
 	private ModelBatch modelBatch;
-	private SpriteBatch spriteBatch;
 	private List<PSObject> Objects = new ArrayList<PSObject>();
 	private PhysicsWorld world;
 	private Long lasttick;
 	private Environment env;
 	private PhysicUserInput physin;
 	private InputMultiplexer inplex;
-	private Skin skin;
-	private Stage stage;
 	private AssetManager assetman;
 	private Overlay overlay;
 	
 	@Override
 	public void create () {
-		overlay = new Overlay();
+		overlay = new Overlay(this);
 		
 		assetman = new AssetManager();
 		Bullet.init();
 		modelBatch = new ModelBatch();
 		
-		
-		
-		spriteBatch = new SpriteBatch();
-		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
-		stage = new Stage();
 		
 		cam = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 0f, 10f);
@@ -106,121 +98,13 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		
 		lasttick = System.currentTimeMillis();
 
-	    inplex.addProcessor(stage);
+	    inplex.addProcessor(overlay.getStage());
 	    inplex.addProcessor(physin);
 	    inplex.addProcessor(fpcontrol);
 	    
 	    
-	    stage.addActor(overlay.cameraInfo);
-	    stage.addActor(overlay.decreaseButton);
-	    stage.addActor(overlay.fps);
-	    stage.addActor(overlay.importModel);
-	    stage.addActor(overlay.increaseButton);
-	    stage.addActor(overlay.resetButton);
-	    stage.addActor(overlay.resetModel);
-	    stage.addActor(overlay.stepSpeed);
-	    stage.addActor(overlay.cLabel);
-	    stage.addActor(overlay.rSlider);
-	    stage.addActor(overlay.gSlider);
-	    stage.addActor(overlay.bSlider);
-	    stage.addActor(overlay.rVal);
-	    stage.addActor(overlay.gVal);
-	    stage.addActor(overlay.bVal);
 	    
-	    
-	    
-	    overlay.Draw();
-	    
-	    overlay.increaseButton.addListener(new ClickListener(){
-        	public void clicked(InputEvent event, float x, float y){
-        		world.increaseStepSpeed();
-        	}
-        });
-	    
-	    overlay.decreaseButton.addListener(new ClickListener(){
-	    		public void clicked(InputEvent event, float x, float y){
-	    			if (world.getStepSpeed() > 0) {;
-	    				world.decreaseStepSpeed();
-	    			}
-	    			else {
-	    				world.setStepSpeed(0f);;
-	    			}
-	    		};
-	    });
-	    
-	    overlay.resetButton.addListener(new ClickListener(){
-	    	public void clicked(InputEvent event, float x, float y){
-	    		world.resetStepSpeed();
-	    		
-	    	}
-	    });
-        
-	    
-	    overlay.importModel.addListener(new ClickListener(){
-	    	public void clicked(InputEvent event, float x, float y){
-	    		int ret = overlay.fc.showOpenDialog(null);
-	    		if(ret == JFileChooser.APPROVE_OPTION){
-			        physin.modelToThrow = overlay.fc.getSelectedFile().getAbsolutePath();
-			        
-					physin.shootsphere = false;
-	    		}
-	    	};
-	    });
-	    
-	    overlay.resetModel.addListener(new ClickListener(){
-	    	public void clicked(InputEvent event, float x, float y){
-	    		physin.shootsphere = true;
-	    	}
-	    });
-	    
-	    overlay.rSlider.addListener(new ChangeListener() {
-			
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Slider slider = (Slider) actor;
-				float value = slider.getValue();
-				
-				if (value == 0){
-					overlay.rVal.setText("R: " + 0);
-				}
-				else{
-					overlay.rVal.setText("R: " + (int) value);
-				}
-			}
-		});
-	    
-	    overlay.gSlider.addListener(new ChangeListener() {
-			
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Slider slider = (Slider) actor;
-				float value = slider.getValue();
-				
-				if (value == 0){
-					overlay.gVal.setText("R: " + 0);
-				}
-				else{
-					overlay.gVal.setText("R: " + (int) value);
-				}
-			}
-		});
-	    
-	    overlay.bSlider.addListener(new ChangeListener() {
-			
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Slider slider = (Slider) actor;
-				float value = slider.getValue();
-				
-				if (value == 0){
-					overlay.bVal.setText("R: " + 0);
-				}
-				else{
-					overlay.bVal.setText("R: " + (int) value);
-				}
-			}
-		});
-	    
+	   
 	    
 	}        
 
@@ -229,7 +113,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		cam.viewportWidth = width;
 		cam.viewportWidth = height;
 		cam.update(true);
-		stage.getViewport().update(width, height, true);
+		overlay.ScreenResized(width, height);
 		
 	};
 
@@ -244,6 +128,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		fpcontrol.update();
 		cam.update();
 
+
 		modelBatch.begin(cam);
 		for(int i = 0; i <Objects.size(); i++){
 			modelBatch.render(Objects.get(i), env);
@@ -251,21 +136,14 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		modelBatch.end();
 		lasttick = System.currentTimeMillis();
 		
-		spriteBatch.begin();
-		stage.draw();
-		
-		overlay.fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
-		overlay.cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z);
-		overlay.stepSpeed.setText("Physics step speed: " + world.getStepSpeed());
-		spriteBatch.end();
-		
+		overlay.Draw();
 		
 	}
 
 	@Override
 	public void dispose () {
 		modelBatch.dispose();
-		spriteBatch.dispose();
+		overlay.dispose();
 
 	}
 
@@ -284,6 +162,14 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	
 	public void updateSliders(){
 		//rValue.
+	}
+	
+	public PhysicsWorld getPhysicsWorld(){
+		return world;
+	}
+	
+	public PhysicUserInput getPhysicsInput(){
+		return physin;
 	}
 }
 
