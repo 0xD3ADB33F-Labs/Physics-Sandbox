@@ -73,15 +73,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		floor.SetColor(Color.DARK_GRAY);
 		Objects.add(floor);
 		world.AddObject(floor);
-		for(int x = 0; x < 10; x++){
-			for(int y=0; y < 10; y++){
-				for(int z=0; z<10; z++){
-					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),z*10), new Quaternion(), new Vector3(1,1,1)));
-					Objects.add(cube);
-					world.AddObject(cube);
-				}
-			}
-		}
+		CreateCubeOfCubes();
 
 		inplex = new InputMultiplexer();
 		physin = new PhysicUserInput(this);
@@ -170,6 +162,28 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	
 	public PhysicUserInput getPhysicsInput(){
 		return physin;
+	}
+	
+	public void ClearWorld(){
+		for(int i = 0; i<Objects.size(); i++){
+			if(!(Objects.get(i) instanceof Floor)){
+				world.ClearObject(Objects.get(i));
+				Objects.remove(i);
+				i--;
+			}
+		}
+	}
+
+	public void CreateCubeOfCubes() {
+		for(int x = 0; x < 8; x++){
+			for(int y=0; y < 8; y++){
+				for(int z=0; z< 8; z++){
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),z*10), new Quaternion(), new Vector3(1,1,1)));
+					Objects.add(cube);
+					world.AddObject(cube);
+				}
+			}
+		}
 	}
 }
 
