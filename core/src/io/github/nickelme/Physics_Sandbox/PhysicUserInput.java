@@ -19,6 +19,11 @@ public class PhysicUserInput implements InputProcessor {
 	
 	boolean shootsphere = true;
 	
+	//Sphere:    0
+	//Model:     1
+	//Explosion: 2
+	int clickMode = 0;
+	
 	String modelToThrow = null;
 	
 	public PhysicUserInput(PhysicsSandboxGame curGame){
@@ -29,7 +34,7 @@ public class PhysicUserInput implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
-		world = new PhysicsWorld();
+		world = psGame.getPhysicsWorld();
 		switch(keycode){
 		
 		case Keys.RIGHT_BRACKET:
@@ -51,6 +56,11 @@ public class PhysicUserInput implements InputProcessor {
 			
 		case Keys.K:
 			shootsphere = true;
+			return true;
+			
+		case Keys.F5:
+			psGame.ClearWorld();
+			psGame.CreateCubeOfCubes();
 			return true;
 		}
 		return false;

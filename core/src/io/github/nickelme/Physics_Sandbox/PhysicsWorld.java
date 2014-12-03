@@ -54,4 +54,8 @@ public class PhysicsWorld {
 	public void resetStepSpeed(){
 		setStepSpeed(1.0f);
 	}
+	
+	public void ClearObject(PSObject object){
+		dynworld.removeRigidBody(object.getRigidBody());
+	}
 }
