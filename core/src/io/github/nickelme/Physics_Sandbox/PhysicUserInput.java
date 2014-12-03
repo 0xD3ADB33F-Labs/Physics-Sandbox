@@ -1,21 +1,15 @@
 package io.github.nickelme.Physics_Sandbox;
 
-import java.io.File;
-
 import javax.swing.JFileChooser;
-
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.assets.loaders.ModelLoader;
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.math.Vector3;
 
 public class PhysicUserInput implements InputProcessor {
 
 	private PhysicsSandboxGame psGame;
+	
+	private PhysicsWorld world;
 	
 	private ObjectThrower objThrow;
 	
@@ -23,9 +17,9 @@ public class PhysicUserInput implements InputProcessor {
 	
 	private JFileChooser filechoose;
 	
-	private boolean shootsphere = true;
+	boolean shootsphere = true;
 	
-	private String modelToThrow = null;
+	String modelToThrow = null;
 	
 	public PhysicUserInput(PhysicsSandboxGame curGame){
 		psGame = curGame;
@@ -35,14 +29,15 @@ public class PhysicUserInput implements InputProcessor {
 	
 	@Override
 	public boolean keyDown(int keycode) {
+		world = new PhysicsWorld();
 		switch(keycode){
 		
 		case Keys.RIGHT_BRACKET:
-			psGame.increasePhysicsStepSpeed();
+			world.increaseStepSpeed();
 			return true;
 			
 		case Keys.LEFT_BRACKET:
-			psGame.decreasePhysicsStepSpeed();
+			world.decreaseStepSpeed();
 			return true;
 			
 		case Keys.L:

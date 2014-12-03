@@ -9,7 +9,6 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -27,13 +26,20 @@ public class PrimitiveCube extends PSObject {
 	protected Matrix4 worldTransform;
 	protected Vector3 boxExtent;
 	
+	
 	public PrimitiveCube(Vector3 size, Matrix4 transform) {
+		
+		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
+		
 		boxExtent = size;
 		worldTransform = transform;
         ModelBuilder modelBuilder = new ModelBuilder();
         rendercube = modelBuilder.createBox(boxExtent.x, boxExtent.y, boxExtent.z, 
-            new Material(ColorAttribute.createDiffuse(Color.GREEN)),
-            Usage.Position | Usage.Normal);
+            new Material(
+            		//ColorAttribute.createDiffuse(Color.GREEN),
+            		ColorAttribute.createDiffuse(colors[1 + (int)(Math.random() * ((14 - 1) + 1))])),
+            		Usage.Position | Usage.Normal);
+        
         instance = new ModelInstance(rendercube);
 	}
 	
@@ -86,6 +92,8 @@ public class PrimitiveCube extends PSObject {
 		rigidbody.setLinearVelocity(vel);
 		
 	}
+	
+	
 	
 
 }

@@ -41,7 +41,17 @@ public class PhysicsWorld {
 	
 	public void setStepSpeed(float newSpeed){
 		stepSpeed = newSpeed;
-		System.out.println("Step Speed: " + stepSpeed);
 	}
-
+	
+	public void increaseStepSpeed(){
+		setStepSpeed(getStepSpeed() + 0.25f);
+	}
+	
+	public void decreaseStepSpeed(){
+		setStepSpeed(getStepSpeed() - 0.25f);
+	}
+	
+	public void resetStepSpeed(){
+		setStepSpeed(1.0f);
+	}
 }
