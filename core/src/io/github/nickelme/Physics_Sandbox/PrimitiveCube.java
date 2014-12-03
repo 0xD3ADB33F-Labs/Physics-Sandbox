@@ -36,8 +36,8 @@ public class PrimitiveCube extends PSObject {
         ModelBuilder modelBuilder = new ModelBuilder();
         rendercube = modelBuilder.createBox(boxExtent.x, boxExtent.y, boxExtent.z, 
             new Material(
-            		//ColorAttribute.createDiffuse(Color.GREEN),
-            		ColorAttribute.createDiffuse(colors[1 + (int)(Math.random() * ((14 - 1) + 1))])),
+            		ColorAttribute.createDiffuse(Color.GREEN),
+            		//ColorAttribute.createDiffuse(colors[1 + (int)(Math.random() * ((14 - 1) + 1))])),
             		Usage.Position | Usage.Normal);
         
         instance = new ModelInstance(rendercube);
