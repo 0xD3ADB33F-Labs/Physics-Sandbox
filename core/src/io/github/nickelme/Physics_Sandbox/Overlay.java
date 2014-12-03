@@ -1,5 +1,6 @@
 package io.github.nickelme.Physics_Sandbox;
 
+import javax.naming.LimitExceededException;
 import javax.swing.JFileChooser;
 
 import com.badlogic.gdx.Gdx;
@@ -60,7 +61,7 @@ public class Overlay{
 	    
 	    fps = new Label("FPS: " + Gdx.graphics.getFramesPerSecond(), skin, "default");
 	    cameraInfo = new Label("", skin);
-	    stepSpeed = new Label("Physics step speed: ", skin, "default");
+	    stepSpeed = new Label("Physics step speed: 1", skin, "default");
 	    cLabel = new Label("Camera position", skin, "default");
 	    rVal = new Label("R: ", skin, "default");
 	    gVal = new Label("G: ", skin, "default");
@@ -75,20 +76,12 @@ public class Overlay{
     	
     	float width = Gdx.graphics.getWidth();
     	float height = Gdx.graphics.getHeight();
-    	
-        increaseButton.setWidth(150f);
-        increaseButton.setHeight(30f);
-        increaseButton.setPosition(width - (width / 8.0f), height / 10.0f);
-         
-        decreaseButton.setWidth(150f);
-        decreaseButton.setHeight(30f);
-        decreaseButton.setPosition(width - (width / 8.0f), height / 40.0f);
-         
+
         resetButton.setWidth(150f);
         resetButton.setHeight(30f);
-        resetButton.setPosition(width - (width / 4.0f), height / 40.0f);
+        resetButton.setPosition(15f, height / 40.0f);
         
-        importModel.setWidth(150f);
+        importModel.setWidth(185f);
         importModel.setHeight(30f);
         importModel.setPosition(width - (width / 2.0f), height / 20.0f);
         
@@ -96,21 +89,13 @@ public class Overlay{
         resetModel.setHeight(30f);
         resetModel.setPosition(width - (width / 4.0f), height / 15f);
         
-        importModel.setWidth(190f);
-        importModel.setHeight(30f);
-        importModel.setPosition(width - (width / 1.80f), height / 40f); 
-        
-        resetModel.setWidth(175f);
-        resetModel.setHeight(30f);
-        resetModel.setPosition(width - (width / 2.52f), height / 40f);
-        
         fps.setPosition(width - (width * 0.05f), height - (height / 20f));
         
         cameraInfo.setPosition(width - (width * 0.99f), height - (height / 10f));;
         
         cLabel.setPosition(width - (width * 0.99f), height - (height / 20f));
         
-        stepSpeed.setPosition(width - (width * 0.99f), height / 40f);
+        stepSpeed.setPosition(width - (width * 0.99f), 80f);
         
         rSlider.setVisible(true);
         rSlider.setPosition(15f, 85f);
@@ -130,30 +115,14 @@ public class Overlay{
         bVal.setPosition(160f, 45f);
        // bSlider.setValue(255f);\
         
-        physSlider.setPosition(15f, 45f);
+        physSlider.setPosition(15f, 60f);
         physSlider.setRange(-10f, 10f);
+        physSlider.setValue(1f);
     	
-        increaseButton.addListener(new ClickListener(){
-        	public void clicked(InputEvent event, float x, float y){
-        		psGame.getPhysicsWorld().increaseStepSpeed();
-        	}
-        });
-	    
-	    decreaseButton.addListener(new ClickListener(){
-	    		public void clicked(InputEvent event, float x, float y){
-	    			if (psGame.getPhysicsWorld().getStepSpeed() > 0) {;
-	    				psGame.getPhysicsWorld().decreaseStepSpeed();
-	    			}
-	    			else {
-	    				psGame.getPhysicsWorld().setStepSpeed(0f);;
-	    			}
-	    		};
-	    });
 	    
 	    resetButton.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
-	    		psGame.getPhysicsWorld().resetStepSpeed();
-	    		
+	    		physSlider.setValue(1f);
 	    	}
 	    });
         
@@ -223,11 +192,24 @@ public class Overlay{
 			}
 		});
 	    
+	    physSlider.addListener(new ChangeListener(){
+	    	public void changed(ChangeEvent event, Actor actor){
+	    		Slider slider = (Slider) actor;
+	    		float value = slider.getValue();
+	    		
+	    		if (value == 1){
+	    			stepSpeed.setText("Physics step speed: 1");
+	    			psGame.getPhysicsWorld().setStepSpeed(1.0f);
+	    		}else{
+	    			stepSpeed.setText("Physics step speed: " + physSlider.getValue());
+	    			psGame.getPhysicsWorld().setStepSpeed(physSlider.getValue());
+	    		}
+	    	}
+	    });
+	    
 	    stage.addActor(cameraInfo);
-	    stage.addActor(decreaseButton);
 	    stage.addActor(fps);
 	    stage.addActor(importModel);
-	    stage.addActor(increaseButton);
 	    stage.addActor(resetButton);
 	    stage.addActor(resetModel);
 	    stage.addActor(stepSpeed);
@@ -235,10 +217,10 @@ public class Overlay{
 	    
 	    //stage.addActor(overlay.rSlider);
 	    //stage.addActor(overlay.gSlider);
-	    //stage.addActor(overlay.bSlider);
+	    //stage.addActor(bSlider);
 	    //stage.addActor(overlay.rVal);
 	    //stage.addActor(overlay.gVal);
-	    //stage.addActor(overlay.bVal);
+	    //stage.addActor(bVal);
 	    stage.addActor(physSlider);
     }
     
@@ -249,7 +231,7 @@ public class Overlay{
     	Camera cam = psGame.getCamera();
 		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z);
-		stepSpeed.setText("Physics step speed: " + psGame.getPhysicsWorld().getStepSpeed());
+		
 		
 		spriteBatch.begin();
 		stage.draw();
