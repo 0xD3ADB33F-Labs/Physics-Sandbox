@@ -228,7 +228,6 @@ public class Overlay{
 	    			psGame.ClearWorld();
 	    			cubeCounter = 0;
 	    			psGame.CreateCubeOfCubes();
-	    			
 	    		}
 	    	});
 	    

@@ -121,7 +121,6 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		fpcontrol.update();
 		cam.update();
 
-
 		modelBatch.begin(cam);
 		for(int i = 0; i <Objects.size(); i++){
 			modelBatch.render(Objects.get(i), env);

@@ -57,8 +57,6 @@ public class PrimitiveSphere extends PSObject{
 			btRigidBodyConstructionInfo fallrigidbodyCI =new btRigidBodyConstructionInfo(mass, motionstate, fallshShape);
 			rigidbody = new btRigidBody(fallrigidbodyCI);
 			
-			
-			
 		}
 		return rigidbody;
 	}
