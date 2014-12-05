@@ -49,10 +49,13 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private InputMultiplexer inplex;
 	private AssetManager assetman;
 	private Overlay overlay;
+	private NetworkController netcon;
 	
 	@Override
 	public void create () {
-		
+		netcon = new NetworkController();
+		netcon.Start();
+		netcon.SendAliveRequest();
 		overlay = new Overlay(this);
 		
 		assetman = new AssetManager();
