@@ -32,7 +32,7 @@ public class PhysicsWorld {
 	}
 	
 	public void Stimulate(float deltatime){
-		dynworld.stepSimulation(deltatime * stepSpeed);
+		dynworld.stepSimulation(deltatime * stepSpeed, 8);
 	}
 	
 	public float getStepSpeed(){
