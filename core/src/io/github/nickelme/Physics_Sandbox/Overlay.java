@@ -31,6 +31,7 @@ public class Overlay{
     TextButton resetButton;
     TextButton importModel;
     TextButton resetModel;
+    TextButton resetWorld;
     
     Label fps;
     Label cameraInfo;
@@ -39,15 +40,20 @@ public class Overlay{
     Label rVal;
     Label gVal;
     Label bVal;
+    Label cubeCount;
     
     
     Slider rSlider;
     Slider gSlider;
     Slider bSlider;
     Slider physSlider;
+    String fName;
+    
+    int cubeCounter;
     
     public Overlay(PhysicsSandboxGame curGame){
     	psGame = curGame;
+    	fName = "PrimitiveSphere";
     	
 		spriteBatch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
@@ -58,6 +64,7 @@ public class Overlay{
 	    resetButton = new TextButton("Reset step speed", skin, "default");;
 	    importModel = new TextButton("Import wavefront model", skin, "default");
 	    resetModel = new TextButton("Reset model to sphere", skin, "default");
+	    resetWorld = new TextButton("Reset World", skin, "default");
 	    
 	    fps = new Label("FPS: " + Gdx.graphics.getFramesPerSecond(), skin, "default");
 	    cameraInfo = new Label("", skin);
@@ -66,7 +73,7 @@ public class Overlay{
 	    rVal = new Label("R: ", skin, "default");
 	    gVal = new Label("G: ", skin, "default");
 	    bVal = new Label("B: ", skin, "default");
-	    
+	    cubeCount = new Label("Number of cubes: ", skin, "default");
 	    
 	    rSlider = new Slider(0,255,1,false,skin);
 	    gSlider = new Slider(0,255,1,false,skin);
@@ -83,15 +90,17 @@ public class Overlay{
         
         importModel.setWidth(185f);
         importModel.setHeight(30f);
-        importModel.setPosition(width - (width / 2.0f), height / 20.0f);
+        importModel.setPosition(875f, 20f);
         
         resetModel.setWidth(175f);
         resetModel.setHeight(30f);
-        resetModel.setPosition(width - (width / 4.0f), height / 15f);
+        resetModel.setPosition(1090f, 20.0f);
         
-        fps.setPosition(width - (width * 0.05f), height - (height / 20f));
+        fps.setPosition(width - (width * 0.05f) - 5f, height - (height / 20f) );
         
-        cameraInfo.setPosition(width - (width * 0.99f), height - (height / 10f));;
+        cameraInfo.setPosition(width - (width * 0.99f), height - (height / 10f) - 20f);
+        
+        cubeCount.setPosition(width - (width * 0.99f), height - (height / 10f) - 100f);
         
         cLabel.setPosition(width - (width * 0.99f), height - (height / 20f));
         
@@ -118,6 +127,10 @@ public class Overlay{
         physSlider.setPosition(15f, 60f);
         physSlider.setRange(-10f, 10f);
         physSlider.setValue(1f);
+        
+        resetWorld.setWidth(175f);
+        resetWorld.setHeight(30f);
+        resetWorld.setPosition(1090f, 70f);
     	
 	    
 	    resetButton.addListener(new ClickListener(){
@@ -134,6 +147,8 @@ public class Overlay{
 	    			psGame.getPhysicsInput().modelToThrow = fc.getSelectedFile().getAbsolutePath();
 			        
 	    			psGame.getPhysicsInput().shootsphere = false;
+	    			
+	    			fName = fc.getSelectedFile().getName();
 	    		}
 	    	};
 	    });
@@ -141,6 +156,7 @@ public class Overlay{
 	    resetModel.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
 	    		psGame.getPhysicsInput().shootsphere = true;
+	    		fName = "PrimitiveSphere";
 	    	}
 	    });
 	    
@@ -207,6 +223,16 @@ public class Overlay{
 	    	}
 	    });
 	    
+	    resetWorld.addListener(new ClickListener(){
+	    	public void clicked(InputEvent event, float x, float y){
+	    			psGame.ClearWorld();
+	    			cubeCounter = 0;
+	    			psGame.CreateCubeOfCubes();
+	    			
+	    		}
+	    	});
+	    
+	    
 	    stage.addActor(cameraInfo);
 	    stage.addActor(fps);
 	    stage.addActor(importModel);
@@ -214,6 +240,8 @@ public class Overlay{
 	    stage.addActor(resetModel);
 	    stage.addActor(stepSpeed);
 	    stage.addActor(cLabel);
+	    stage.addActor(resetWorld);
+	    stage.addActor(cubeCount);
 	    
 	    //stage.addActor(overlay.rSlider);
 	    //stage.addActor(overlay.gSlider);
@@ -230,7 +258,8 @@ public class Overlay{
     public void Draw(){
     	Camera cam = psGame.getCamera();
 		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
-		cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z);
+		cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z + "\n\nCurrent projectile: " + fName);
+		cubeCount.setText("Number of cubes: " + cubeCounter);
 		
 		
 		spriteBatch.begin();

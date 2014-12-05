@@ -28,11 +28,12 @@ public class PrimitiveSphere extends PSObject{
 	
 	
 	public PrimitiveSphere(Vector3 size, Matrix4 transform){
+		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
 		worldTransform = transform;
 		spheresize = size;
 		ModelBuilder modelbuilder = new ModelBuilder();
 		
-		rendersphere = modelbuilder.createSphere(spheresize.x, spheresize.y, spheresize.z, 32, 32, new Material(ColorAttribute.createDiffuse(Color.RED)),Usage.Position | Usage.Normal);
+		rendersphere = modelbuilder.createSphere(spheresize.x, spheresize.y, spheresize.z, 32, 32, new Material(ColorAttribute.createDiffuse(colors[1 + (int)(Math.random() * ((14 - 1) + 1))])),Usage.Position | Usage.Normal);
 		instance = new ModelInstance(rendersphere);
 		
 	}

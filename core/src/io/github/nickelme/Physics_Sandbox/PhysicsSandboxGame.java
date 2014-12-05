@@ -52,6 +52,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	
 	@Override
 	public void create () {
+		
 		overlay = new Overlay(this);
 		
 		assetman = new AssetManager();
@@ -181,6 +182,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),z*10), new Quaternion(), new Vector3(1,1,1)));
 					Objects.add(cube);
 					world.AddObject(cube);
+					overlay.cubeCounter++;
 				}
 			}
 		}
