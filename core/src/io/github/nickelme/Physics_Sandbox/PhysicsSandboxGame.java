@@ -5,6 +5,8 @@ import java.util.List;
 
 import javax.swing.JFileChooser;
 
+import sun.security.krb5.internal.NetClient;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
@@ -49,13 +51,12 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private InputMultiplexer inplex;
 	private AssetManager assetman;
 	private Overlay overlay;
-	private NetworkController netcon;
+	
+	private static PhysicsSandboxGame instance;
 	
 	@Override
 	public void create () {
-		netcon = new NetworkController();
-		netcon.Start();
-		netcon.SendAliveRequest();
+		instance = this;
 		overlay = new Overlay(this);
 		
 		assetman = new AssetManager();
@@ -66,14 +67,14 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		cam = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		cam.position.set(10f, 0f, 10f);
 		cam.lookAt(0,0,0);
-		cam.near = 1f;
-		cam.far = 1000f;
+		cam.near = 2f;
+		cam.far = 1000000f;
 		cam.update(true);
 
 
 
 		world = new PhysicsWorld();
-		Floor floor = new Floor(new Vector3(1000,1,1000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
+		Floor floor = new Floor(new Vector3(100000,1,100000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
 		floor.SetColor(Color.DARK_GRAY);
 		Objects.add(floor);
 		world.AddObject(floor);
@@ -189,6 +190,12 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 			}
 		}
 	}
+	
+	public static PhysicsSandboxGame getInstance(){
+		return instance;
+	}
+	
+	
 }
 
 
@@ -204,7 +211,9 @@ class Floor extends PrimitiveCube{
 		if(rigidbody == null){
 			btCollisionShape groundShape = new btStaticPlaneShape(new Vector3(0, 1, 0), 1);
 			btDefaultMotionState fallMotionState = new btDefaultMotionState(worldTransform);
-			btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(0, fallMotionState, groundShape, new Vector3(0,0,0));
+	        Vector3 fallInertia = new Vector3(0, 0, 0);
+	        groundShape.calculateLocalInertia(100000, fallInertia);
+			btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(0, fallMotionState, groundShape, fallInertia);
 			rigidbody = new btRigidBody(fallRigidBodyCI);
 		}
 		return rigidbody;
