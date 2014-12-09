@@ -62,6 +62,15 @@ public class PhysicUserInput implements InputProcessor {
 			psGame.ClearWorld();
 			psGame.CreateCubeOfCubes();
 			return true;
+			
+		case Keys.F6:
+			psGame.ClearWorld();
+			psGame.CreateCubePyramid();
+			return true;
+			
+		case Keys.F7:
+			psGame.ClearWorld();
+			psGame.CreateBowlingAlley();
 		}
 		return false;
 	}

@@ -191,10 +191,28 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 	}
 	
+	public void CreateCubePyramid(){
+		for(int y = 6; y > 0; y--){
+			for(int z = -y; z < y; z++){
+				for(int x = -y; x < y; x++){
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(5-y)*10,z*10), new Quaternion(), new Vector3(1,1,1)));
+					Objects.add(cube);
+					world.AddObject(cube);
+				}
+			}
+		}
+	}
+	
 	public static PhysicsSandboxGame getInstance(){
 		return instance;
 	}
 	
+	
+	public void CreateBowlingAlley(){
+		ModelObject obj = new ModelObject("BowlingPin/Bowling Pin.obj", new Matrix4(new Vector3(1.0f, 0.0f, 1.0f), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
+		Objects.add(obj);
+		world.AddObject(obj);
+	}
 	
 }
 

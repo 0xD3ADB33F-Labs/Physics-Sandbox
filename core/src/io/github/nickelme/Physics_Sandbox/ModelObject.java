@@ -30,17 +30,25 @@ public class ModelObject extends PSObject {
 	private static HashMap<String, Model> loadedmodels = new HashMap<String, Model>();
 	private static HashMap<String, btConvexHullShape> loadedBodies = new HashMap<String, btConvexHullShape>();
 
-	public ModelObject(String path, Matrix4 transform){
+	public ModelObject(String path, Matrix4 transform, boolean isabsolute){
 		ModelPath = path;
 		if(loadedmodels.containsKey(path)){
 			objModel = loadedmodels.get(ModelPath);
 		}else{
 			ModelLoader loader = new ObjLoader();
-			objModel = loader.loadModel(Gdx.files.absolute(ModelPath));
+			if(isabsolute){
+				objModel = loader.loadModel(Gdx.files.absolute(ModelPath));
+			}else{
+				objModel = loader.loadModel(Gdx.files.internal(ModelPath));
+			}
 			loadedmodels.put(path, objModel);
 		}
 		instance = new ModelInstance(objModel);
 		worldTransform = transform;
+	}
+	
+	public ModelObject(String path, Matrix4 transform){
+		this(path, transform, true);
 	}
 
 	@Override
