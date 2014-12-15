@@ -25,11 +25,13 @@ import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.Bullet;
+import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btStaticPlaneShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
+import com.badlogic.gdx.physics.bullet.linearmath.btIDebugDraw;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -51,8 +53,11 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private InputMultiplexer inplex;
 	private AssetManager assetman;
 	private Overlay overlay;
+	private DebugDrawer dDrawer;
 	
 	private static PhysicsSandboxGame instance;
+	
+	public boolean bDebugRender = false;
 	
 	@Override
 	public void create () {
@@ -99,7 +104,11 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	    inplex.addProcessor(physin);
 	    inplex.addProcessor(fpcontrol);
 	    
-	    
+	    dDrawer = new DebugDrawer();
+	    dDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
+
+	    world.getWorld().setDebugDrawer(dDrawer);
+
 	    
 	   
 	    
@@ -130,6 +139,11 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 			modelBatch.render(Objects.get(i), env);
 		}
 		modelBatch.end();
+		if(bDebugRender){
+			dDrawer.begin(cam);
+	    	world.getWorld().debugDrawWorld();
+	    	dDrawer.end();
+		}
 		lasttick = System.currentTimeMillis();
 		
 		overlay.Draw();
@@ -209,9 +223,13 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	
 	
 	public void CreateBowlingAlley(){
-		ModelObject obj = new ModelObject("BowlingPin/Bowling Pin.obj", new Matrix4(new Vector3(1.0f, 0.0f, 1.0f), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
-		Objects.add(obj);
-		world.AddObject(obj);
+		for(int i = 1; i<50; i++){
+			for(int j = 0; j<i; j++){
+				ModelObject obj = new ModelObject("BowlingPin/Bowling Pin.obj", new Matrix4(new Vector3(i*30.0f, 0.0f, (j*30.0f)-((i*30.0f)/2)), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
+				Objects.add(obj);
+				world.AddObject(obj);
+			}
+		}
 	}
 	
 }

@@ -58,4 +58,8 @@ public class PhysicsWorld {
 	public void ClearObject(PSObject object){
 		dynworld.removeRigidBody(object.getRigidBody());
 	}
+	
+	public btDiscreteDynamicsWorld getWorld(){
+		return dynworld;
+	}
 }

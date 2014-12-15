@@ -71,6 +71,11 @@ public class PhysicUserInput implements InputProcessor {
 		case Keys.F7:
 			psGame.ClearWorld();
 			psGame.CreateBowlingAlley();
+			return true;
+			
+		case Keys.P:
+			psGame.bDebugRender = !psGame.bDebugRender;
+			return true;
 		}
 		return false;
 	}

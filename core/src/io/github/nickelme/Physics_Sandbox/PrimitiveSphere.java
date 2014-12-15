@@ -25,7 +25,7 @@ public class PrimitiveSphere extends PSObject{
 	btRigidBody rigidbody;
 	Matrix4 worldTransform;
 	Vector3 spheresize;
-	
+	private float massmult = 1.0f;
 	
 	public PrimitiveSphere(Vector3 size, Matrix4 transform){
 		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
@@ -45,13 +45,17 @@ public class PrimitiveSphere extends PSObject{
 		
 	}
 
+	
+	public void setMassMultiplier(float pmassmult){
+		massmult = pmassmult;
+	}
 
 	@Override
 	public btRigidBody getRigidBody() {
 		if (rigidbody == null){
 			btCollisionShape fallshShape = new btSphereShape(spheresize.x);
 			btDefaultMotionState motionstate = new btDefaultMotionState(worldTransform);
-			float mass = 4*(((float)Math.PI)*(spheresize.x * spheresize.x));
+			float mass = (4*(((float)Math.PI)*(spheresize.x * spheresize.x)))*massmult;
 			Vector3 fallinertia = new Vector3(0, 0, 0);
 			fallshShape.calculateLocalInertia(mass, fallinertia);
 			btRigidBodyConstructionInfo fallrigidbodyCI =new btRigidBodyConstructionInfo(mass, motionstate, fallshShape);
