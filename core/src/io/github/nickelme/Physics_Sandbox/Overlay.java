@@ -32,6 +32,7 @@ public class Overlay{
     TextButton importModel;
     TextButton resetModel;
     TextButton resetWorld;
+    TextButton debugRender;
     
     Label fps;
     Label cameraInfo;
@@ -59,12 +60,13 @@ public class Overlay{
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		stage = new Stage();
 		
-	    increaseButton = new TextButton("Step speed +", skin, "default");
-	    decreaseButton = new TextButton("Step speed -", skin, "default");
-	    resetButton = new TextButton("Reset step speed", skin, "default");;
-	    importModel = new TextButton("Import wavefront model", skin, "default");
-	    resetModel = new TextButton("Reset model to sphere", skin, "default");
+	    increaseButton = new TextButton("Step Speed +", skin, "default");
+	    decreaseButton = new TextButton("Step Speed -", skin, "default");
+	    resetButton = new TextButton("Reset Step Speed", skin, "default");;
+	    importModel = new TextButton("Import Wavefront Model", skin, "default");
+	    resetModel = new TextButton("Reset Model to Sphere", skin, "default");
 	    resetWorld = new TextButton("Reset World", skin, "default");
+	    debugRender = new TextButton("Toggle Debug Render", skin, "default");
 	    
 	    fps = new Label("FPS: " + Gdx.graphics.getFramesPerSecond(), skin, "default");
 	    cameraInfo = new Label("", skin);
@@ -131,6 +133,11 @@ public class Overlay{
         resetWorld.setWidth(175f);
         resetWorld.setHeight(30f);
         resetWorld.setPosition(1090f, 70f);
+        
+        debugRender.setWidth(185f);
+        debugRender.setHeight(30f);
+        debugRender.setPosition(875f, 70f);
+        
     	
 	    
 	    resetButton.addListener(new ClickListener(){
@@ -230,7 +237,11 @@ public class Overlay{
 	    			psGame.CreateCubeOfCubes();
 	    		}
 	    	});
-	    
+	    debugRender.addListener(new ClickListener(){
+	    	public void clicked(InputEvent event, float x, float y){
+	    		psGame.bDebugRender = !psGame.bDebugRender;
+	    	}
+	    });
 	    
 	    stage.addActor(cameraInfo);
 	    stage.addActor(fps);
@@ -241,6 +252,7 @@ public class Overlay{
 	    stage.addActor(cLabel);
 	    stage.addActor(resetWorld);
 	    stage.addActor(cubeCount);
+	    stage.addActor(debugRender);
 	    
 	    //stage.addActor(overlay.rSlider);
 	    //stage.addActor(overlay.gSlider);
@@ -258,9 +270,14 @@ public class Overlay{
     	Camera cam = psGame.getCamera();
 		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
 		cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z + "\n\nCurrent projectile: " + fName);
-		cubeCount.setText("Number of cubes: " + cubeCounter);
 		
+		cubeCount.setText("Number of cubes: " + cubeCounter + "\n");
 		
+		if (psGame.bDebugRender == true){
+			cubeCount.setText(/*"Number of cubes: " + cubeCounter + "*/"Debug Render: True");
+		}else{
+			cubeCount.setText(/*"Number of cubes: " + cubeCounter + "*/"Debug Render: False");
+		}
 		spriteBatch.begin();
 		stage.draw();
 		spriteBatch.end();
