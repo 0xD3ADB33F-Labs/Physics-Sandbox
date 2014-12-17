@@ -50,12 +50,16 @@ public class PhysicUserInput implements InputProcessor {
 			if(ret == JFileChooser.APPROVE_OPTION){
 		        modelToThrow = filechoose.getSelectedFile().getAbsolutePath();
 		        
-				shootsphere = false;
+		        clickMode = 1;
 			}
 			return true;
 			
 		case Keys.K:
-			shootsphere = true;
+			clickMode = 0;
+			return true;
+			
+		case Keys.O:
+			clickMode = 2;
 			return true;
 			
 		case Keys.F5:
@@ -75,6 +79,10 @@ public class PhysicUserInput implements InputProcessor {
 			
 		case Keys.P:
 			psGame.bDebugRender = !psGame.bDebugRender;
+			return true;
+			
+		case Keys.B:
+			psGame.Explode(new Vector3(40,40,40), 1000.0f, 100000.0f);
 			return true;
 		}
 		return false;
@@ -99,10 +107,18 @@ public class PhysicUserInput implements InputProcessor {
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
 		if(!bIsDragging){
-			if(shootsphere){
+			switch(clickMode){
+			case 0:
 				objThrow.ThrowObject(new Vector3(screenX, screenY, 1));
-			}else{
+				break;
+				
+			case 1:
 				objThrow.ThrowModel(new Vector3(screenX, screenY, 1), modelToThrow);
+				break;
+				
+			case 2:
+				objThrow.ThrowBomb(new Vector3(screenX, screenY, 1));
+				break;
 			}
 		}else{
 			bIsDragging = false;

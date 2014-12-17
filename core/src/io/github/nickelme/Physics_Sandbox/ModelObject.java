@@ -101,7 +101,11 @@ public class ModelObject extends PSObject {
 			}
 			btDefaultMotionState fallMotionState = new btDefaultMotionState(worldTransform);
 			BoundingBox out = new BoundingBox();
-			objModel.calculateBoundingBox(out);
+			for(int i = 0; i<objModel.meshParts.size; i++){
+				if(objModel.meshParts.get(i).mesh.getNumIndices() > 0){
+					objModel.meshParts.get(i).mesh.extendBoundingBox(out, 0, objModel.meshParts.get(i).mesh.getNumIndices());
+				}
+			}
 			float mass = out.getDepth()*out.getWidth()*out.getHeight();
 			Vector3 fallInertia = new Vector3(0, 0, 0);
 			simplifiedConvexShape.calculateLocalInertia(mass, fallInertia);

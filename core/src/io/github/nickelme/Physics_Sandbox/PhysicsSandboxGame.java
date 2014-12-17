@@ -24,6 +24,7 @@ import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.math.Interpolation.Exp;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
@@ -216,6 +217,28 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 				}
 			}
 		}
+	}
+	
+	public void Explode(Vector3 loc, float size, float force){
+		for(int i = 0; i<Objects.size(); i++){
+			PSObject obj = Objects.get(i);
+			Matrix4 objtrans = obj.getRigidBody().getWorldTransform();
+			Vector3 objloc = new Vector3(0,0,0);
+			objtrans.getTranslation(objloc);
+			if(loc.dst(objloc) < size){
+				float xforce = (float) -(Math.atan2(loc.x-objloc.x, loc.y-objloc.y)/Math.PI);
+				float yforce = (float) -(Math.atan2(loc.y-objloc.y, loc.x-objloc.x)/Math.PI);
+				float zforce = (float) -(Math.atan2(loc.z-objloc.z, loc.y-objloc.y)/Math.PI);
+				//System.out.println("XForce: " + xforce);
+				obj.getRigidBody().activate();
+				obj.getRigidBody().applyForce(new Vector3(xforce * force,yforce * force,zforce * force), loc);
+			}
+		}
+	}
+	
+	public void RemoveObject(PSObject obj){
+		world.ClearObject(obj);
+		Objects.remove(Objects.indexOf(obj));
 	}
 	
 	public static PhysicsSandboxGame getInstance(){

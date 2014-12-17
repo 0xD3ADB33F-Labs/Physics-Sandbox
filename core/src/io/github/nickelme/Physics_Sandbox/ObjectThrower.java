@@ -30,6 +30,19 @@ public class ObjectThrower {
 		sphere.setVelocity(dir);
 	}
 	
+	public void ThrowBomb(Vector3 screenSpace){
+		Camera cam = psGame.getCamera();
+		Vector3 location = cam.position;
+		Vector3 dir = cam.unproject(screenSpace);
+		dir.nor();
+		dir.scl(throwSpeed);
+		BombObject sphere = new BombObject(new Vector3(20.0f, 20.0f, 20.0f), new Matrix4(location, new Quaternion(), new Vector3(1,1,1)), 10000.0f, 10000.0f);
+		//sphere.setMassMultiplier(100.0f);
+		//cube.SetColor(Color.ORANGE);
+		psGame.addObject(sphere);
+		sphere.setVelocity(dir);
+	}
+	
 	public void ThrowModel(Vector3 screenSpace, String model){
 		Camera cam = psGame.getCamera();
 		Vector3 location = cam.position;
@@ -41,6 +54,8 @@ public class ObjectThrower {
 		psGame.addObject(sphere);
 		sphere.setVelocity(dir);
 	}
+	
+	
 	
 
 }
