@@ -271,7 +271,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		for(int y = a; y > 0; y--){
 			for(int z = -y; z < y; z++){
 				for(int x = -y; x < y; x++){
-					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(5-y)*10,z*10), new Quaternion(), new Vector3(1,1,1)));
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,((a-1)-y)*10,z*10), new Quaternion(), new Vector3(1,1,1)));
 					Objects.add(cube);
 					world.AddObject(cube);
 				}

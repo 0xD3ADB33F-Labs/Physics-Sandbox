@@ -342,6 +342,10 @@ public class Overlay{
 					psGame.ClearWorld();
 					psGame.CreateBowlingAlley();
 				}else if(selectBox.getSelected()=="Custom Cube"){
+					baseSize.setVisible(false);
+					baseLab.setVisible(false);
+					baseSize.setDisabled(true);
+					customPyramid.setVisible(false);
 					dimX.setVisible(true);
 		    		dimY.setVisible(true);
 		    		dimZ.setVisible(true);
@@ -351,6 +355,14 @@ public class Overlay{
 		    		dimY.setDisabled(false);
 		    		dimZ.setDisabled(false);
 				}else if(selectBox.getSelected()=="Custom Pyramid"){
+					dimX.setVisible(false);
+		    		dimY.setVisible(false);
+		    		dimZ.setVisible(false);
+		    		cCubeDims.setVisible(false);
+		    		customCube.setVisible(false);
+		    		dimX.setDisabled(true);
+		    		dimY.setDisabled(true);
+		    		dimZ.setDisabled(true);
 					baseSize.setVisible(true);
 					baseLab.setVisible(true);
 					baseSize.setDisabled(false);
