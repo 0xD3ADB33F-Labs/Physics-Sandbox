@@ -12,15 +12,32 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btDispatcher;
+import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
+import com.badlogic.gdx.physics.bullet.collision.btPersistentManifold;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+
+
+class CollisionCallback extends ContactResultCallback{
+	
+	BombObject obj;
+	
+	@Override
+	public float addSingleResult(btManifoldPoint cp, btCollisionObjectWrapper colObj0Wrap, int partId0, int index0, btCollisionObjectWrapper colObj1Wrap, int partId1, int index1) {
+		obj.Explode();
+		
+		return 0.0f;
+	}
+}
 
 public class BombObject extends PSObject {
 
@@ -33,6 +50,10 @@ public class BombObject extends PSObject {
 	private float massmult = 1.0f;
 	float ExplodeSize;
 	float ExplodeForce;
+	
+	boolean hasExploded = false;
+	
+	CollisionCallback callback;
 	
 	public BombObject(Vector3 size, Matrix4 transform, float explodesize, float explodeforce){
 		ExplodeForce = explodeforce;
@@ -57,7 +78,8 @@ public class BombObject extends PSObject {
 			fallshShape.calculateLocalInertia(mass, fallinertia);
 			btRigidBodyConstructionInfo fallrigidbodyCI =new btRigidBodyConstructionInfo(mass, motionstate, fallshShape);
 			rigidbody = new btRigidBody(fallrigidbodyCI);
-			
+			callback = new CollisionCallback();
+			callback.obj = this;
 		}
 		return rigidbody;
 	}
@@ -73,16 +95,10 @@ public class BombObject extends PSObject {
 		instance.transform.scale(2.0f, 2, 2);
 		worldTransform.set(instance.transform);
 		PhysicsSandboxGame ps = PhysicsSandboxGame.getInstance();
-		btDispatcher dispatch = ps.getPhysicsWorld().getWorld().getDispatcher();
-		for(int i = 0; i<dispatch.getNumManifolds(); i++){
-			if((dispatch.getManifoldByIndexInternal(i).getBody0() == rigidbody || dispatch.getManifoldByIndexInternal(i).getBody1() == rigidbody) && dispatch.getManifoldByIndexInternal(i).getNumContacts() > 0){
-				System.out.println("Contacts: " + dispatch.getManifoldByIndexInternal(i).getNumContacts());
-				Vector3 loc = new Vector3();
-				worldTransform.getTranslation(loc);
-				PhysicsSandboxGame.getInstance().Explode(loc, ExplodeSize, ExplodeForce);
-				PhysicsSandboxGame.getInstance().RemoveObject(this);
-				break;
-			}	
+		if(!hasExploded){
+			ps.getPhysicsWorld().getWorld().contactTest(rigidbody, callback);
+		}else{
+			ps.RemoveObject(this);
 		}
 	}
 
@@ -98,6 +114,14 @@ public class BombObject extends PSObject {
 	public void setVelocity(Vector3 vel) {
 		rigidbody.setLinearVelocity(vel);
 		
+	}
+	
+	public void Explode(){
+		PhysicsSandboxGame ps = PhysicsSandboxGame.getInstance();
+		Vector3 loc = new Vector3();
+		worldTransform.getTranslation(loc);
+		ps.Explode(loc, ExplodeSize, ExplodeForce);
+		hasExploded = true;
 	}
 
 }

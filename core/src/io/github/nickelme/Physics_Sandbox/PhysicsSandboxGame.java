@@ -23,6 +23,7 @@ import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Interpolation.Exp;
 import com.badlogic.gdx.physics.bullet.Bullet;
@@ -80,12 +81,13 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 
 
 		world = new PhysicsWorld();
+		//world.getWorld().setGravity(new Vector3());
 		Floor floor = new Floor(new Vector3(100000,1,100000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
 		floor.SetColor(Color.DARK_GRAY);
 		Objects.add(floor);
 		world.AddObject(floor);
 		CreateCubeOfCubes();
-
+		
 		inplex = new InputMultiplexer();
 		physin = new PhysicUserInput(this);
 		
@@ -109,8 +111,6 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	    dDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
 
 	    world.getWorld().setDebugDrawer(dDrawer);
-
-	    
 	   
 	    
 	}        
@@ -148,6 +148,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		lasttick = System.currentTimeMillis();
 		
 		overlay.Draw();
+		//Explode(new Vector3(10, 10, 10), 1000, 1000);
 		
 	}
 
@@ -218,6 +219,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 	}
 	
+	
 	public void Explode(Vector3 loc, float size, float force){
 		for(int i = 0; i<Objects.size(); i++){
 			PSObject obj = Objects.get(i);
@@ -225,12 +227,21 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 			Vector3 objloc = new Vector3(0,0,0);
 			objtrans.getTranslation(objloc);
 			if(loc.dst(objloc) < size){
-				float xforce = (float) -(Math.atan2(loc.x-objloc.x, loc.y-objloc.y)/Math.PI);
-				float yforce = (float) -(Math.atan2(loc.y-objloc.y, loc.x-objloc.x)/Math.PI);
-				float zforce = (float) -(Math.atan2(loc.z-objloc.z, loc.y-objloc.y)/Math.PI);
-				//System.out.println("XForce: " + xforce);
+				Vector2 loc2d = new Vector2(loc.x, loc.z);
+				Vector2 objloc2d = new Vector2(objloc.x, objloc.z);
+				float xforce = (float) (Math.atan((loc.y-objloc.y)/(loc.x-objloc.x))/(Math.PI/2));
+				float yforce = (float) (Math.atan((loc.y-objloc.y)/(loc2d.dst(objloc2d)))/(Math.PI/2));
+				float zforce = (float) (Math.atan((loc.y-objloc.y)/ (loc.z-objloc.z))/(Math.PI/2));
+				
+				if(yforce < 0){
+					xforce = -xforce;
+					zforce = -zforce;
+				}
+				
+				//System.out.println("YForce: " + yforce);
+				//System.out.println("\tAngle: " + Math.toDegrees((Math.atan2(loc.y-objloc.y, loc2d.dst(objloc2d)))));
 				obj.getRigidBody().activate();
-				obj.getRigidBody().applyForce(new Vector3(xforce * force,yforce * force,zforce * force), loc);
+				obj.getRigidBody().applyCentralForce(new Vector3(xforce*force,yforce*force,zforce*force));
 			}
 		}
 	}
@@ -244,6 +255,13 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		return instance;
 	}
 	
+	public PSObject getObjectAt(int i){
+		return Objects.get(i);
+	}
+	
+	public int getNumberOfObjects(){
+		return Objects.size();
+	}
 	
 	public void CreateBowlingAlley(){
 		for(int i = 1; i<50; i++){
