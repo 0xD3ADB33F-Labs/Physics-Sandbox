@@ -71,7 +71,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		
 		
 		cam = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(10f, 0f, 10f);
+		cam.position.set(100f, 0f, 100f);
 		cam.lookAt(0,0,0);
 		cam.near = 2f;
 		cam.far = 1000000f;
@@ -213,7 +213,6 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(5-y)*10,z*10), new Quaternion(), new Vector3(1,1,1)));
 					Objects.add(cube);
 					world.AddObject(cube);
-					
 				}
 			}
 		}
@@ -256,6 +255,29 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 	}
 	
+	public void CustomCubeOfCubes(int a, int b, int c){
+		for(int x = 0; x < a; x++){
+			for(int y=0; y < b; y++){
+				for(int z=0; z< c; z++){
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),z*10), new Quaternion(), new Vector3(1,1,1)));
+					Objects.add(cube);
+					world.AddObject(cube);
+				}
+			}
+		}
+	}
+	
+	public void CustomPyramidOfCubes(int a){
+		for(int y = a; y > 0; y--){
+			for(int z = -y; z < y; z++){
+				for(int x = -y; x < y; x++){
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(5-y)*10,z*10), new Quaternion(), new Vector3(1,1,1)));
+					Objects.add(cube);
+					world.AddObject(cube);
+				}
+			}
+		}
+	}
 }
 
 
