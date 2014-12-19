@@ -195,10 +195,10 @@ public class Overlay{
         dimZ.setMessageText("Z");
         
         baseLab.setPosition(18f, 425f);
-        baseLab.setVisible(true);
+        baseLab.setVisible(false);
         
         baseSize.setPosition(18f, 380f);
-        baseSize.setVisible(true);
+        baseSize.setVisible(false);
         baseSize.setMessageText("Base Size");
         
         customPyramid.setPosition(18f, 325f);
