@@ -36,7 +36,7 @@ public class ObjectThrower {
 		Vector3 dir = cam.unproject(screenSpace);
 		dir.nor();
 		dir.scl(throwSpeed);
-		BombObject sphere = new BombObject(new Vector3(20.0f, 20.0f, 20.0f), new Matrix4(location, new Quaternion(), new Vector3(1,1,1)), 10000.0f, 10000.0f);
+		BombObject sphere = new BombObject(new Vector3(20.0f, 20.0f, 20.0f), new Matrix4(location, new Quaternion(), new Vector3(1,1,1)), 10000.0f, 100000.0f);
 		//sphere.setMassMultiplier(100.0f);
 		//cube.SetColor(Color.ORANGE);
 		psGame.addObject(sphere);

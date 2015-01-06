@@ -20,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.Environment;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
+import com.badlogic.gdx.graphics.g3d.utils.BaseAnimationController.Transform;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
@@ -227,21 +228,16 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 			Vector3 objloc = new Vector3(0,0,0);
 			objtrans.getTranslation(objloc);
 			if(loc.dst(objloc) < size){
-				Vector2 loc2d = new Vector2(loc.x, loc.z);
-				Vector2 objloc2d = new Vector2(objloc.x, objloc.z);
-				float xforce = (float) (Math.atan((loc.y-objloc.y)/(loc.x-objloc.x))/(Math.PI/2));
-				float yforce = (float) (Math.atan((loc.y-objloc.y)/(loc2d.dst(objloc2d)))/(Math.PI/2));
-				float zforce = (float) (Math.atan((loc.y-objloc.y)/ (loc.z-objloc.z))/(Math.PI/2));
+				Vector3 workvec = new Vector3(objloc);
+				workvec.sub(loc);
+				workvec.nor();
+				workvec.scl(force);
 				
-				if(yforce < 0){
-					xforce = -xforce;
-					zforce = -zforce;
-				}
-				
-				//System.out.println("YForce: " + yforce);
 				//System.out.println("\tAngle: " + Math.toDegrees((Math.atan2(loc.y-objloc.y, loc2d.dst(objloc2d)))));
-				obj.getRigidBody().activate();
-				obj.getRigidBody().applyCentralForce(new Vector3(xforce*force,yforce*force,zforce*force));
+				if(!obj.getRigidBody().isActive()){
+					obj.getRigidBody().activate();
+				}
+				obj.getRigidBody().applyCentralForce(workvec);
 			}
 		}
 	}
@@ -264,7 +260,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	}
 	
 	public void CreateBowlingAlley(){
-		for(int i = 1; i<50; i++){
+		for(int i = 1; i<10; i++){
 			for(int j = 0; j<i; j++){
 				ModelObject obj = new ModelObject("BowlingPin/Bowling Pin.obj", new Matrix4(new Vector3(i*30.0f, 0.0f, (j*30.0f)-((i*30.0f)/2)), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
 				Objects.add(obj);
