@@ -58,6 +58,8 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private Overlay overlay;
 	private DebugDrawer dDrawer;
 	
+	private boolean iscoin = false;
+	
 	private static PhysicsSandboxGame instance;
 	
 	public boolean bDebugRender = false;
@@ -129,12 +131,29 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	public void render () {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+		
 		world.Stimulate(Gdx.graphics.getDeltaTime());
 		for(int i = 0; i<Objects.size(); i++){
 			Objects.get(i).Update();
 		}
 		fpcontrol.update();
 		cam.update();
+		
+		if(iscoin){
+			Vector3 vec = new Vector3();
+			for(int i = 0; i<Objects.size(); i++){
+				if((Objects.get(i) instanceof ModelObject)){
+					ModelObject obj = (ModelObject) Objects.get(i);
+					if(obj.getPath().equalsIgnoreCase("Quater/Quater.obj")){
+						vec = obj.getRigidBody().getWorldTransform().getTranslation(vec);
+					}
+				}
+			}
+			cam.up.x = 0.0f;
+			cam.up.z = 0.0f;
+			cam.lookAt(vec);
+		}
+		
 
 		modelBatch.begin(cam);
 		for(int i = 0; i <Objects.size(); i++){
@@ -186,6 +205,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	}
 	
 	public void ClearWorld(){
+		iscoin = false;
 		for(int i = 0; i<Objects.size(); i++){
 			if(!(Objects.get(i) instanceof Floor)){
 				world.ClearObject(Objects.get(i));
@@ -242,6 +262,20 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 	}
 	
+	public void FlipCoin(){
+		for(int i = 0; i<Objects.size(); i++){
+			if((Objects.get(i) instanceof ModelObject)){
+				ModelObject obj = (ModelObject) Objects.get(i);
+				if(obj.getPath().equalsIgnoreCase("Quater/Quater.obj")){
+					obj.getRigidBody().activate();
+					float flipforce = (float) (Math.random()*900+100);
+					System.out.println("Flipping with force: " + flipforce);
+					obj.getRigidBody().applyImpulse(new Vector3(0, flipforce, 0), new Vector3(5,0,0));
+				}
+			}
+		}
+	}
+	
 	public void RemoveObject(PSObject obj){
 		world.ClearObject(obj);
 		Objects.remove(Objects.indexOf(obj));
@@ -257,6 +291,13 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	
 	public int getNumberOfObjects(){
 		return Objects.size();
+	}
+	
+	public void CreateCoinFlip(){
+		ModelObject obj = new ModelObject("Quater/Quater.obj", new Matrix4(new Vector3(0,30,0), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
+		Objects.add(obj);
+		world.AddObject(obj);
+		iscoin = true;
 	}
 	
 	public void CreateBowlingAlley(){

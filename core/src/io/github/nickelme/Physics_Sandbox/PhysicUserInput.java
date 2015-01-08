@@ -77,12 +77,21 @@ public class PhysicUserInput implements InputProcessor {
 			psGame.CreateBowlingAlley();
 			return true;
 			
+		case Keys.F8:
+			psGame.ClearWorld();
+			psGame.CreateCoinFlip();
+			return true;
+			
 		case Keys.P:
 			psGame.bDebugRender = !psGame.bDebugRender;
 			return true;
 			
 		case Keys.B:
 			psGame.Explode(new Vector3(40,40,40), 1000.0f, 100000.0f);
+			return true;
+			
+		case Keys.F:
+			psGame.FlipCoin();
 			return true;
 		}
 		return false;

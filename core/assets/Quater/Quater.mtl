@@ -1,0 +1,9 @@
+newmtl Mat
+Kd 1.00 1.00 1.00
+Ka 0.00 0.00 0.00
+Tf 1.00 1.00 1.00
+Ni 1.000000
+illum 2
+map_Kd texture.png
+
+

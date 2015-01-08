@@ -119,6 +119,9 @@ public class BombObject extends PSObject {
 	public void Explode(){
 		PhysicsSandboxGame ps = PhysicsSandboxGame.getInstance();
 		Vector3 loc = new Vector3();
+		rigidbody.getMotionState().getWorldTransform(instance.transform);
+		instance.transform.scale(2.0f, 2, 2);
+		worldTransform.set(instance.transform);
 		worldTransform.getTranslation(loc);
 		ps.Explode(loc, ExplodeSize, ExplodeForce);
 		hasExploded = true;

@@ -58,6 +58,10 @@ public class ModelObject extends PSObject {
 	public ModelObject(String path, Matrix4 transform){
 		this(path, transform, true);
 	}
+	
+	public String getPath(){
+		return ModelPath;
+	}
 
 	@Override
 	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
