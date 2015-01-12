@@ -4,5 +4,10 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-1.4.1-sources.jar"/>
 	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet-1.4.1-sources.jar"/>
+	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/Leap/LeapJava.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/Leap/x86"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -64,10 +64,14 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	
 	public boolean bDebugRender = false;
 	
+	private LeapController handController;
+	
 	@Override
 	public void create () {
 		instance = this;
 		overlay = new Overlay(this);
+		
+		handController = new LeapController();
 		
 		assetman = new AssetManager();
 		Bullet.init();
