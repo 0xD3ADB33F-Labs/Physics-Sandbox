@@ -48,7 +48,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private FirstPersonCameraController fpcontrol;
 	private PerspectiveCamera cam;
 	private ModelBatch modelBatch;
-	private List<PSObject> Objects = new ArrayList<PSObject>();
+	public List<PSObject> Objects = new ArrayList<PSObject>();
 	private PhysicsWorld world;
 	private Long lasttick;
 	private Environment env;
@@ -139,7 +139,22 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		fpcontrol.update();
 		cam.update();
 		
-		if(iscoin){
+//		if(iscoin){
+//			Vector3 vec = new Vector3();
+//			for(int i = 0; i<Objects.size(); i++){
+//				if((Objects.get(i) instanceof ModelObject)){
+//					ModelObject obj = (ModelObject) Objects.get(i);
+//					if(obj.getPath().equalsIgnoreCase("Quater/Quater.obj")){
+//						vec = obj.getRigidBody().getWorldTransform().getTranslation(vec);
+//					}
+//				}
+//			}
+//			cam.up.x = 0.0f;
+//			cam.up.z = 0.0f;
+//			cam.lookAt(vec);
+//		}
+		
+		if (iscoin){
 			Vector3 vec = new Vector3();
 			for(int i = 0; i<Objects.size(); i++){
 				if((Objects.get(i) instanceof ModelObject)){
@@ -153,7 +168,6 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 			cam.up.z = 0.0f;
 			cam.lookAt(vec);
 		}
-		
 
 		modelBatch.begin(cam);
 		for(int i = 0; i <Objects.size(); i++){
@@ -268,7 +282,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 				ModelObject obj = (ModelObject) Objects.get(i);
 				if(obj.getPath().equalsIgnoreCase("Quater/Quater.obj")){
 					obj.getRigidBody().activate();
-					float flipforce = (float) (Math.random()*900+100);
+					float flipforce = (float) (Math.random()*500+300);
 					System.out.println("Flipping with force: " + flipforce);
 					obj.getRigidBody().applyImpulse(new Vector3(0, flipforce, 0), new Vector3(5,0,0));
 				}
