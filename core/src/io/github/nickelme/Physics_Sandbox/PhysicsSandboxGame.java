@@ -138,22 +138,6 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 		fpcontrol.update();
 		cam.update();
-		
-//		if(iscoin){
-//			Vector3 vec = new Vector3();
-//			for(int i = 0; i<Objects.size(); i++){
-//				if((Objects.get(i) instanceof ModelObject)){
-//					ModelObject obj = (ModelObject) Objects.get(i);
-//					if(obj.getPath().equalsIgnoreCase("Quater/Quater.obj")){
-//						vec = obj.getRigidBody().getWorldTransform().getTranslation(vec);
-//					}
-//				}
-//			}
-//			cam.up.x = 0.0f;
-//			cam.up.z = 0.0f;
-//			cam.lookAt(vec);
-//		}
-		
 		if (iscoin){
 			Vector3 vec = new Vector3();
 			for(int i = 0; i<Objects.size(); i++){
