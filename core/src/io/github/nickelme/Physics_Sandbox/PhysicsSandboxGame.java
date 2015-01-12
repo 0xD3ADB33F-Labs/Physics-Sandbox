@@ -335,6 +335,16 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 			}
 		}
 	}
+	
+	public void resetCamera(){
+		cam.position.set(100f, 0f, 100f);
+		cam.lookAt(0,0,0);
+		cam.near = 2f;
+		cam.far = 1000000f;
+		cam.up.x = 0.0f;
+		cam.up.z = 0.0f;
+		cam.update(true);
+	}
 }
 
 

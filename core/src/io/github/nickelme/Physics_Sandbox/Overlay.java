@@ -298,9 +298,34 @@ public class Overlay{
 	    	}
 	    });
 	    
+	    baseSize.addListener(new ClickListener(){
+	    	public void clicked(InputEvent event, float x, float y){
+	    		enablePyramidVars();
+	    	}
+	    });
+	    
+	    dimX.addListener(new ClickListener(){
+	    	public void clicked(InputEvent event, float x, float y){
+	    		enableCubeVars();
+	    	}
+	    });
+	    
+	    dimY.addListener(new ClickListener(){
+	    	public void clicked(InputEvent event, float x, float y){
+	    		enableCubeVars();
+	    	}
+	    });
+	    
+	    dimZ.addListener(new ClickListener(){
+	    	public void clicked(InputEvent event, float x, float y){
+	    		enableCubeVars();
+	    	}
+	    });
+	    
 	    resetWorld.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
 	    		if(selectBox.getSelected()=="8x8 Cube"){
+	    			psGame.resetCamera();
 	    			psGame.ClearWorld();
 					psGame.CreateCubeOfCubes();
 				}else if(selectBox.getSelected()=="Pyramid"){
@@ -313,10 +338,12 @@ public class Overlay{
 					psGame.ClearWorld();
 		    		psGame.CustomCubeOfCubes(Integer.parseInt(dimX.getText()), Integer.parseInt(dimY.getText()), Integer.parseInt(dimZ.getText()));
 					showCubeVars();
+					disableCubeVars();
 				}else if (selectBox.getSelected()=="Custom Pyramid"){
 					psGame.ClearWorld();
 		    		psGame.CustomPyramidOfCubes(Integer.parseInt(baseSize.getText()));
 		    		showPyramidVars();
+		    		disablePyramidVars();
 				}else if(selectBox.getSelected()=="Coin Flip"){
 					psGame.ClearWorld();
 					psGame.CreateCoinFlip();
@@ -335,28 +362,33 @@ public class Overlay{
 	    selectBox.addListener(new ChangeListener(){
 			public void changed(ChangeEvent arg0, Actor arg1) {
 				if(selectBox.getSelected()=="8x8 Cube"){
+					psGame.resetCamera();
 					flipCoin.setVisible(false);
 					hideCubeVars();
 					hidePyramidVars();
 					psGame.ClearWorld();
 					psGame.CreateCubeOfCubes();
 				}else if(selectBox.getSelected()=="Pyramid"){
+					psGame.resetCamera();
 					flipCoin.setVisible(false);
 					hidePyramidVars();
 					hideCubeVars();
 					psGame.ClearWorld();
 					psGame.CreateCubePyramid();
 				}else if(selectBox.getSelected()=="Bowling Alley"){
+					psGame.resetCamera();
 					flipCoin.setVisible(false);
 					hidePyramidVars();
 					hideCubeVars();
 					psGame.ClearWorld();
 					psGame.CreateBowlingAlley();
 				}else if(selectBox.getSelected()=="Custom Cube"){
+					psGame.resetCamera();
 					flipCoin.setVisible(false);
 					hidePyramidVars();
 					showCubeVars();
 				}else if(selectBox.getSelected()=="Custom Pyramid"){
+					psGame.resetCamera();
 					flipCoin.setVisible(false);
 					hideCubeVars();
 					showPyramidVars();
@@ -479,7 +511,25 @@ public class Overlay{
 		dimZ.setDisabled(true);
     }
     
+    public void disableCubeVars(){
+    	dimX.setDisabled(true);
+    	dimY.setDisabled(true);
+    	dimZ.setDisabled(true);
+    }
     
+    public void disablePyramidVars(){
+    	baseSize.setDisabled(true);
+    }
+    
+    public void enableCubeVars(){
+    	dimX.setDisabled(false);
+    	dimY.setDisabled(false);
+    	dimZ.setDisabled(false);
+    }
+    
+    public void enablePyramidVars(){
+    	baseSize.setDisabled(false);
+    }
     
     public void showPyramidVars(){
     	baseSize.setVisible(true);
