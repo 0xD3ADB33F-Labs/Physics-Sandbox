@@ -11,6 +11,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.controllers.ControllerListener;
+import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -46,7 +48,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 public class PhysicsSandboxGame extends ApplicationAdapter {
 
 	private FirstPersonCameraController fpcontrol;
-	private PerspectiveCamera cam;
+	public PerspectiveCamera cam;
 	private ModelBatch modelBatch;
 	public List<PSObject> Objects = new ArrayList<PSObject>();
 	private PhysicsWorld world;
@@ -56,6 +58,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private InputMultiplexer inplex;
 	private AssetManager assetman;
 	private Overlay overlay;
+	public Controller controllerClass;
 	private DebugDrawer dDrawer;
 	
 	private boolean iscoin = false;
@@ -70,6 +73,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	public void create () {
 		instance = this;
 		overlay = new Overlay(this);
+		controllerClass = new Controller(this);
 		
 		handController = new LeapController();
 		
@@ -103,6 +107,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		fpcontrol.setVelocity(50.0f);
 
 		Gdx.input.setInputProcessor(inplex);
+		
 
 		env = new Environment();
 		env.set(new ColorAttribute(ColorAttribute.AmbientLight, new Color(0.5f,0.5f,0.5f, 1.0f)));
@@ -113,6 +118,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	    inplex.addProcessor(overlay.getStage());
 	    inplex.addProcessor(physin);
 	    inplex.addProcessor(fpcontrol);
+	    
 	    
 	    dDrawer = new DebugDrawer();
 	    dDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
@@ -149,6 +155,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 					ModelObject obj = (ModelObject) Objects.get(i);
 					if(obj.getPath().equalsIgnoreCase("Quater/Quater.obj")){
 						vec = obj.getRigidBody().getWorldTransform().getTranslation(vec);
+						System.out.println(vec);
 					}
 				}
 			}
@@ -161,6 +168,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		for(int i = 0; i <Objects.size(); i++){
 			modelBatch.render(Objects.get(i), env);
 		}
+		
 		modelBatch.end();
 		if(bDebugRender){
 			dDrawer.begin(cam);
@@ -170,6 +178,8 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		lasttick = System.currentTimeMillis();
 		
 		overlay.Draw();
+		controllerClass.Nudge();
+		
 		//Explode(new Vector3(10, 10, 10), 1000, 1000);
 		
 	}

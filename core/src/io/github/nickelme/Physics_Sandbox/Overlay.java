@@ -49,6 +49,7 @@ public class Overlay{
     Label bVal;
     Label cubeCount;
     Label cCubeDims,baseLab;
+    Label controllerInfo;
     
     
     Slider rSlider;
@@ -82,6 +83,7 @@ public class Overlay{
 	    customCube = new TextButton("Create", skin, "default");
 	    customPyramid = new TextButton("Create", skin, "default");
 	    flipCoin = new TextButton("Flip Coin", skin, "default");
+	    controllerInfo = new Label("DualShock 4 Wireless Controller: Connected", skin, "default");
 	    
 	    fps = new Label("FPS: " + Gdx.graphics.getFramesPerSecond(), skin, "default");
 	    cameraInfo = new Label("", skin);
@@ -174,6 +176,9 @@ public class Overlay{
         
         cCubeDims.setPosition(25f, 250f);
         cCubeDims.setVisible(false);
+        
+        controllerInfo.setPosition(500f, 18f);
+        controllerInfo.setVisible(false);
         
         dimX.setVisible(false);
         dimX.setPosition(50f, 370f);
@@ -455,6 +460,7 @@ public class Overlay{
 	    //stage.addActor(bVal);
 	    stage.addActor(physSlider);
 	    stage.addActor(flipCoin);
+	    stage.addActor(controllerInfo);
     }
     
     
@@ -477,9 +483,7 @@ public class Overlay{
 		stage.draw();
 		spriteBatch.end();
 		
-		if (selectBox.getSelected()=="Custom Cube") {
-			
-		}
+		
 
     }
      
