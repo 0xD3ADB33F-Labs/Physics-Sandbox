@@ -28,7 +28,7 @@ public class Controller extends ApplicationAdapter implements ControllerListener
    public Controller(PhysicsSandboxGame curGame){
 	   psGame = curGame;
 	   Controllers.addListener(this);
-	   overlay = new Overlay(curGame);
+	   //overlay = new Overlay(curGame);
 	   
    }
    
@@ -45,19 +45,28 @@ public class Controller extends ApplicationAdapter implements ControllerListener
 	   if (hasControllers){
 		   	
 		   	if (controller.getAxis(DS4.AXIS_LEFT_X) > 0.2f || controller.getAxis(DS4.AXIS_LEFT_X) < -0.2f){
-		   		psGame.cam.translate(controller.getAxis(DS4.AXIS_LEFT_X) * 1f, 0f, 0f);
+	   			Vector3 translate = psGame.cam.direction.cpy();
+	   			translate.rotate(90.0f, 0.0f, 1.0f, 0.0f);
+	   			translate.nor();
+	   			translate.scl(-controller.getAxis(DS4.AXIS_LEFT_X));
+	   			psGame.cam.translate(translate);
 	   		}	
 	   
 	   		if(controller.getAxis(DS4.AXIS_LEFT_Y) > 0.2f || controller.getAxis(DS4.AXIS_LEFT_Y) <-0.2f){
-		   		psGame.cam.translate(0f, controller.getAxis(DS4.AXIS_LEFT_Y) * -1f, 0f);
+	   			Vector3 translate = psGame.cam.direction.cpy();
+	   			translate.nor();
+	   			translate.scl(-controller.getAxis(DS4.AXIS_LEFT_Y));
+		   		psGame.cam.translate(translate);
 	   		}
 	   
 	   		if(controller.getAxis(DS4.AXIS_RIGHT_X) > 0.2f || controller.getAxis(DS4.AXIS_RIGHT_X) < -0.2f){
-	   			psGame.cam.rotate(controller.getAxis(DS4.AXIS_RIGHT_X), 0, 1, 0);
+	   			psGame.cam.rotate(-controller.getAxis(DS4.AXIS_RIGHT_X), 0, 1, 0);
 	   		}
 	   
-	   		if(controller.getAxis(DS4.AXIS_RIGHT_Y) > 0.2f || controller.getAxis(DS4.AXIS_RIGHT_Y) < 0.2f){
-	   			psGame.cam.rotate(0, 1, 0, 0);
+	   		if(controller.getAxis(DS4.AXIS_RIGHT_Y) > 0.2f || controller.getAxis(DS4.AXIS_RIGHT_Y) < -0.2f){
+	   			Vector3 tmp = new Vector3();
+	   			tmp.set(psGame.cam.direction).crs(psGame.cam.up).nor();
+	   			psGame.cam.rotate(tmp, controller.getAxis(DS4.AXIS_RIGHT_Y));
 	   		}
 	   }
 	   

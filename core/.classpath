@@ -2,11 +2,24 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-1.4.1-sources.jar"/>
-	<classpathentry kind="lib" path="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet.jar" sourcepath="H:/Computer Science/Physics-Sandbox/Physics-Sandbox/lib/gdx-bullet-1.4.1-sources.jar"/>
 	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/Leap/LeapJava.jar">
 		<attributes>
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/Leap/x86"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/GDX/gdx.jar" sourcepath="/Physics_Sandbox-desktop/lib/GDX/gdx-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/GDX"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/GDX/gdx-bullet.jar" sourcepath="/Physics_Sandbox-desktop/lib/GDX/gdx-bullet-1.4.1-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/GDX"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/GDX/gdx-controllers-1.5.2.jar" sourcepath="/Physics_Sandbox-desktop/lib/GDX/gdx-controllers-1.5.2-sources.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/GDX"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="output" path="bin"/>

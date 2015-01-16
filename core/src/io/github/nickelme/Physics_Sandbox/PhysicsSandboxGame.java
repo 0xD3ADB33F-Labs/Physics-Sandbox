@@ -89,6 +89,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		cam.far = 1000000f;
 		cam.update(true);
 
+		System.out.println("Width: " + Gdx.graphics.getWidth() + "\nHeight: " + Gdx.graphics.getHeight());
 
 
 		world = new PhysicsWorld();
