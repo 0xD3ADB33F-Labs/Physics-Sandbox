@@ -16,14 +16,23 @@ import com.badlogic.gdx.controllers.Controllers;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Mesh;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g3d.Environment;
+import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
 import com.badlogic.gdx.graphics.g3d.environment.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.utils.BaseAnimationController.Transform;
 import com.badlogic.gdx.graphics.g3d.utils.FirstPersonCameraController;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector2;
@@ -95,7 +104,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		world = new PhysicsWorld();
 		//world.getWorld().setGravity(new Vector3());
 		Floor floor = new Floor(new Vector3(100000,1,100000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
-		floor.SetColor(Color.DARK_GRAY);
+		//floor.SetColor(Color.DARK_GRAY);
 		Objects.add(floor);
 		world.AddObject(floor);
 		CreateCubeOfCubes();
@@ -364,6 +373,30 @@ class Floor extends PrimitiveCube{
 
 	public Floor(Vector3 size, Matrix4 transform) {
 		super(size, transform);
+		Texture tex = new Texture("Textures/floortex.png");
+		tex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
+		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+		
+        ModelBuilder modelBuilder = new ModelBuilder();
+        
+        rendercube = modelBuilder.createBox(boxExtent.x, boxExtent.y, boxExtent.z, 
+            new Material(
+            		//ColorAttribute.createDiffuse(Color.GREEN),
+            		TextureAttribute.createDiffuse(tex)),
+            		Usage.Position | Usage.TextureCoordinates);
+		for(int i = 0; i<rendercube.meshParts.size; i++){
+			Mesh curmesh = rendercube.meshParts.get(i).mesh;
+			int vertsize = curmesh.getVertexSize();
+			for(int j = 0; j<curmesh.getNumVertices(); j++){
+				float[] floats = new float[vertsize/4];
+				curmesh.getVertices(j * (vertsize/4),floats);
+				floats[3] *= 1000;
+				floats[4] *= 1000;
+				curmesh.updateVertices(j * (vertsize/4),floats);
+			}
+		}
+        
+        instance = new ModelInstance(rendercube);
 	}
 
 	@Override
