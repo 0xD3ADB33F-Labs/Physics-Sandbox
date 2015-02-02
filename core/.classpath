@@ -4,7 +4,7 @@
 	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/Leap/LeapJava.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/Leap/x86"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/Leap/Linux-X64"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/GDX/gdx.jar" sourcepath="/Physics_Sandbox-desktop/lib/GDX/gdx-sources.jar">

@@ -1,5 +1,9 @@
 package io.github.nickelme.Physics_Sandbox;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
@@ -10,8 +14,10 @@ import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.btActivatingCollisionAlgorithm;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
@@ -20,7 +26,10 @@ import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstruct
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Pool;
+import com.leapmotion.leap.Finger;
+import com.leapmotion.leap.FingerList;
 import com.leapmotion.leap.Hand;
+import com.leapmotion.leap.Matrix;
 import com.leapmotion.leap.Vector;
 
 public class LeapHand extends PSObject {
@@ -30,13 +39,17 @@ public class LeapHand extends PSObject {
 	btRigidBody rigidbody;
 	Matrix4 worldTransform;
 	Vector3 spheresize;
+	
+	HashMap<Finger.Type, LeapFinger> Fingers;
+	
 
 
 	private boolean isAlive = true;
 
 	public LeapHand(){
+		Fingers = new HashMap<Finger.Type, LeapFinger>();
 		worldTransform = new Matrix4();
-		spheresize = new Vector3(10.0f, 2.5f, 10.0f);
+		spheresize = new Vector3(20.0f, 2.5f, 20.0f);
 
 		Gdx.app.postRunnable(new Runnable(){
 
@@ -61,7 +74,7 @@ public class LeapHand extends PSObject {
 	@Override
 	public btRigidBody getRigidBody() {
 		if (rigidbody == null){
-			btCollisionShape fallshShape = new btSphereShape(spheresize.x);
+			btCollisionShape fallshShape = new btBoxShape(spheresize);
 			btDefaultMotionState motionstate = new btDefaultMotionState(worldTransform);
 			float mass = 0;
 			Vector3 fallinertia = new Vector3(0, 0, 0);
@@ -75,9 +88,31 @@ public class LeapHand extends PSObject {
 		return rigidbody;
 	}
 
-	public void LeapUpdate(Hand hand){
-		Vector vec = hand.palmPosition();
-		worldTransform.setTranslation(vec.getX(), vec.getY(), vec.getZ());
+	public void LeapUpdate(Hand leapHand){
+	    Vector handXBasis =  leapHand.palmNormal().cross(leapHand.direction()).normalized();
+	    Vector handYBasis = leapHand.palmNormal().opposite();
+	    Vector handZBasis = leapHand.direction().opposite();
+	    Vector handOrigin =  leapHand.palmPosition();
+	    handOrigin.setX(handOrigin.getX()*LeapController.LEAP_SCALE_FACTOR);
+	    handOrigin.setY(handOrigin.getY()*LeapController.LEAP_SCALE_FACTOR);
+	    handOrigin.setZ(handOrigin.getZ()*LeapController.LEAP_SCALE_FACTOR);
+	    Matrix handTransform = new Matrix(handXBasis, handYBasis, handZBasis, handOrigin);
+		
+		//worldTransform.setTranslation(vec3);
+		worldTransform.set(handTransform.toArray4x4());
+		
+		FingerList fgrlist = leapHand.fingers();
+		Iterator<Finger> fgritr = fgrlist.iterator();
+		while(fgritr.hasNext()){
+			Finger fgr = fgritr.next();
+			if(Fingers.containsKey(fgr.type())){
+				Fingers.get(fgr.type()).LeapUpdate(fgr);
+			}else{
+				LeapFinger psfinger = new LeapFinger();
+				Fingers.put(fgr.type(), psfinger);
+				psfinger.LeapUpdate(fgr);
+			}
+		}
 
 	}
 
@@ -86,10 +121,10 @@ public class LeapHand extends PSObject {
 		if(instance != null){
 			Vector3 loc = new Vector3();
 			worldTransform.getTranslation(loc);
-			instance.transform.setTranslation(loc);
+			instance.transform.set(worldTransform);
 			Matrix4 trans = instance.transform.cpy();
 			trans.scale(0.5f, 0.5f, 0.5f);
-			rigidbody.setWorldTransform(trans);
+			rigidbody.getMotionState().setWorldTransform(trans);
 		}
 
 		if(!isAlive){
@@ -112,6 +147,12 @@ public class LeapHand extends PSObject {
 
 	public void CleanSelfUp(){
 		isAlive = false;
+		Iterator<Finger.Type> fgritr = Fingers.keySet().iterator();
+		while(fgritr.hasNext()){
+			Finger.Type curfgr = fgritr.next();
+			Fingers.get(curfgr).CleanSelfUp();
+			Fingers.remove(curfgr);
+		}
 	}
 
 }

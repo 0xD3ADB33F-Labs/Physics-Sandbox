@@ -405,8 +405,8 @@ class Floor extends PrimitiveCube{
 			btCollisionShape groundShape = new btStaticPlaneShape(new Vector3(0, 1, 0), 1);
 			btDefaultMotionState fallMotionState = new btDefaultMotionState(worldTransform);
 	        Vector3 fallInertia = new Vector3(0, 0, 0);
-	        groundShape.calculateLocalInertia(100000, fallInertia);
-			btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(0, fallMotionState, groundShape, fallInertia);
+	        groundShape.calculateLocalInertia(0, fallInertia);
+	        btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(0, fallMotionState, groundShape, fallInertia);
 			rigidbody = new btRigidBody(fallRigidBodyCI);
 		}
 		return rigidbody;

@@ -14,6 +14,8 @@ import com.leapmotion.leap.Listener;
 
 public class LeapController extends Listener {
 
+	public final static float LEAP_SCALE_FACTOR = 0.5f;
+	
 	Controller control;
 
 	HashMap<Integer, LeapHand> hands;
