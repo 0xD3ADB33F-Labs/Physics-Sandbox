@@ -79,7 +79,7 @@ public class PhysicUserInput implements InputProcessor {
 			
 		case Keys.F8:
 			psGame.ClearWorld();
-			psGame.CreateCoinFlip();
+			psGame.chessGame();
 			return true;
 			
 		case Keys.P:

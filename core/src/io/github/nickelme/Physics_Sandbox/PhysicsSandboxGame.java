@@ -356,6 +356,12 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 	}
 	
+	public void chessGame(){
+		ModelObject obj = new ModelObject("ChessGame/chessboard.obj", new Matrix4(new Vector3(0, 0f,0), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
+		Objects.add(obj);
+		world.AddObject(obj);
+	}
+	
 	public void resetCamera(){
 		cam.position.set(100f, 0f, 100f);
 		cam.lookAt(0,0,0);
