@@ -131,7 +131,7 @@ public class LeapFinger extends PSObject {
 			fallshShape.calculateLocalInertia(mass, fallinertia);
 			btRigidBodyConstructionInfo fallrigidbodyCI =new btRigidBodyConstructionInfo(mass, motionstate, fallshShape);
 			rigidbody = new btRigidBody(fallrigidbodyCI);
-			
+			rigidbody.setFriction(1.0f);
 			//hinge = new btHingeConstraint(rigidbody, )
 			rigidbody.setCollisionFlags(rigidbody.getCollisionFlags() | btCollisionObject.CollisionFlags.CF_KINEMATIC_OBJECT);
 			rigidbody.setActivationState(4);
@@ -151,10 +151,12 @@ public class LeapFinger extends PSObject {
 			dir.y = 0;
 			Matrix4 rot = new Matrix4();
 			rot.setToWorld(Vector3.Zero, dir, Vector3.Y);
-			worldTransform.set(cam.position, new Quaternion()).mul(rot).mul(localTransform);
+			Matrix4 trans = new Matrix4();
+			trans.setTranslation(0.0f, -50.0f, -100.0f);
+			worldTransform.set(cam.position, new Quaternion()).mul(rot).mul(trans).mul(localTransform);
 			//worldTransform.set(mParent.worldTransform).mul(localTransform);
 			instance.transform.set(worldTransform);
-			Matrix4 trans = instance.transform.cpy();
+			//Matrix4 trans = instance.transform.cpy();
 			//trans.scale(0.5f, 0.5f, 0.5f);
 			rigidbody.getMotionState().getWorldTransform(previousTransform);
 			previousTransform.getTranslation(prevloc);
@@ -165,7 +167,7 @@ public class LeapFinger extends PSObject {
 				System.out.println(prevloc.toString() + " : " + loc.toString());
 				
 			}
-			rigidbody.getMotionState().setWorldTransform(trans);
+			rigidbody.getMotionState().setWorldTransform(worldTransform);
 			//rigidbody.setWorldTransform(trans);
 			//PhysicsSandboxGame ps = PhysicsSandboxGame.getInstance();
 			//ps.getPhysicsWorld().getWorld().contactTest(rigidbody, callback);

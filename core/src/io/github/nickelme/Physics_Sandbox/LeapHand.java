@@ -65,6 +65,17 @@ public class LeapHand extends PSObject {
 
 				instance = new ModelInstance(renderhand);
 				PhysicsSandboxGame psGame = PhysicsSandboxGame.getInstance();
+				Camera cam = PhysicsSandboxGame.getInstance().cam;
+				Vector3 dir = cam.direction.cpy();
+				dir.x = -dir.x;
+				dir.y = 0;
+				Matrix4 rot = new Matrix4();
+				rot.setToWorld(Vector3.Zero, dir, Vector3.Y);
+				dir.nor();
+				Matrix4 trans = new Matrix4();
+				trans.setTranslation(0.0f, -50.0f, -100.0f);
+				worldTransform.set(cam.position, new Quaternion()).mul(rot).mul(trans).mul(localTransform);
+				instance.transform.set(worldTransform);
 				psGame.addObject(LeapHand.this);
 			}
 		});
@@ -79,9 +90,11 @@ public class LeapHand extends PSObject {
 	@Override
 	public btRigidBody getRigidBody() {
 		if (rigidbody == null){
-			btCollisionShape fallShape = new btBoxShape(spheresize);
+			Vector3 halfsize = spheresize.cpy();
+			halfsize.scl(0.5f);
+			btCollisionShape fallShape = new btBoxShape(halfsize);
 			btDefaultMotionState motionstate = new btDefaultMotionState(worldTransform);
-			float mass = 200.0f;
+			float mass = 800.0f;
 			Vector3 fallinertia = new Vector3(0, 0, 0);
 			fallShape.calculateLocalInertia(mass, fallinertia);
 			btRigidBodyConstructionInfo fallrigidbodyCI =new btRigidBodyConstructionInfo(mass, motionstate, fallShape);
@@ -148,11 +161,14 @@ public class LeapHand extends PSObject {
 			dir.y = 0;
 			Matrix4 rot = new Matrix4();
 			rot.setToWorld(Vector3.Zero, dir, Vector3.Y);
-			worldTransform.set(cam.position, new Quaternion()).mul(rot).mul(localTransform);
+			dir.nor();
+			Matrix4 trans = new Matrix4();
+			trans.setTranslation(0.0f, -50.0f, -100.0f);
+			worldTransform.set(cam.position, new Quaternion()).mul(rot).mul(trans).mul(localTransform);
 			instance.transform.set(worldTransform);
-			Matrix4 trans = instance.transform.cpy();
-			trans.scale(0.5f, 0.5f, 0.5f);
-			rigidbody.getMotionState().setWorldTransform(trans);
+			//Matrix4 trans = instance.transform.cpy();
+			//trans.scale(0.5f, 0.5f, 0.5f);
+			rigidbody.getMotionState().setWorldTransform(worldTransform);
 		}
 
 		if(!isAlive){
