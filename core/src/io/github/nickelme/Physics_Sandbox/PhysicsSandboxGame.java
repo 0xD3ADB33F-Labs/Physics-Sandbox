@@ -153,11 +153,11 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 		
 		world.Stimulate(Gdx.graphics.getDeltaTime());
+		fpcontrol.update();
+		cam.update(true);
 		for(int i = 0; i<Objects.size(); i++){
 			Objects.get(i).Update();
 		}
-		fpcontrol.update();
-		cam.update();
 		if (iscoin){
 			Vector3 vec = new Vector3();
 			for(int i = 0; i<Objects.size(); i++){

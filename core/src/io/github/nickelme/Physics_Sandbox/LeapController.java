@@ -41,8 +41,9 @@ public class LeapController extends Listener {
 		while(handsitr.hasNext()){
 			Hand curhand = handsitr.next();
 			if(!hands.containsKey(new Integer(curhand.id()))){
-				LeapHand newhand = new LeapHand();
+				LeapHand newhand = new LeapHand(curhand);
 				hands.put(curhand.id(), newhand);
+				System.out.println("Adding id: " + curhand.id());
 				//psGame.addObject(newhand);
 				newhand.LeapUpdate(curhand);
 			}else{
