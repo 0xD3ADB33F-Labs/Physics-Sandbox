@@ -78,6 +78,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	
 	private LeapController handController;
 	
+	
 	@Override
 	public void create () {
 		instance = this;
@@ -85,6 +86,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		controllerClass = new Controller(this);
 		
 		handController = new LeapController();
+		
 		
 		assetman = new AssetManager();
 		Bullet.init();
@@ -189,6 +191,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		
 		overlay.Draw();
 		controllerClass.Nudge();
+		
 		
 		//Explode(new Vector3(10, 10, 10), 1000, 1000);
 		

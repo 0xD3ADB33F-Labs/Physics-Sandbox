@@ -22,5 +22,10 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/GDX"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/OpenCV/opencv-2410.jar">
+		<attributes>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/OpenCV"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
