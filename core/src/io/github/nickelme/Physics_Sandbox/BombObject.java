@@ -127,4 +127,34 @@ public class BombObject extends PSObject {
 		hasExploded = true;
 	}
 
+	@Override
+	public Matrix4 getMatrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector3 getVelocity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector3 getSize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMatrix(Matrix4 mat) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean needsNeetUpdate() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
 }

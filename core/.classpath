@@ -27,5 +27,6 @@
 			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="Physics_Sandbox-desktop/lib/OpenCV"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="/Physics_Sandbox-desktop/lib/ProtoBuffer/protobuf-java-2.6.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

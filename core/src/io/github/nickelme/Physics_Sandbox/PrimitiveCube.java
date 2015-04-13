@@ -1,5 +1,7 @@
 package io.github.nickelme.Physics_Sandbox;
 
+import java.util.Arrays;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -26,22 +28,26 @@ public class PrimitiveCube extends PSObject {
 	protected Matrix4 worldTransform;
 	protected Vector3 boxExtent;
 	
+	protected Matrix4 lastnetup;
+	
+	protected float density;
+	
 	
 	
 	public PrimitiveCube(Vector3 size, Matrix4 transform) {
-		
+		density = 750.0f;
 		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
-		
 		boxExtent = size;
 		worldTransform = transform;
         ModelBuilder modelBuilder = new ModelBuilder();
-        rendercube = modelBuilder.createBox(boxExtent.x, boxExtent.y, boxExtent.z, 
+        rendercube = modelBuilder.createBox(boxExtent.x , boxExtent.y, boxExtent.z, 
             new Material(
             		//ColorAttribute.createDiffuse(Color.GREEN),
             		ColorAttribute.createDiffuse(colors[1 + (int)(Math.random() * ((14 - 1) + 1))])),
             		Usage.Position | Usage.Normal);
         
         instance = new ModelInstance(rendercube);
+        lastnetup = worldTransform.cpy();
 	}
 	
 	public void SetColor(Color newcolor){
@@ -56,15 +62,23 @@ public class PrimitiveCube extends PSObject {
 	@Override
 	public btRigidBody getRigidBody() {
 		if(rigidbody == null){
-			btCollisionShape fallShape = new btBoxShape(boxExtent);
+			Vector3 halfBoxExtent = boxExtent.cpy().scl(0.5f);
+			btCollisionShape fallShape = new btBoxShape(halfBoxExtent);
 			btDefaultMotionState fallMotionState = new btDefaultMotionState(worldTransform);
-	        float mass = boxExtent.x * boxExtent.y * boxExtent.z;
+	        float mass = (float) ((boxExtent.x * boxExtent.y * boxExtent.z)*density)*0.0254f;
 	        Vector3 fallInertia = new Vector3(0, 0, 0);
 	        fallShape.calculateLocalInertia(mass, fallInertia);
+	        //fallShape.setMargin(0.00001f);
+	       
 	        btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(mass, fallMotionState, fallShape, fallInertia);
 	        rigidbody = new btRigidBody(fallRigidBodyCI);
+	        
+	        rigidbody.setRestitution(0.5f);
+	        rigidbody.setFriction(1f);
+	        //rigidbody.setSleepingThresholds(0.01f, 0.01f);
 	        //fallRigidBodyCI.dispose();
-		}
+	       // System.out.println("RenderCube: " + boxExtent.x/3 + " " + boxExtent.y/3 + " " + boxExtent.z/3 + "\nRigidBody: " + halfBoxExtent );
+		} 
 		return rigidbody;
 	}
 
@@ -72,11 +86,11 @@ public class PrimitiveCube extends PSObject {
 	public void getRenderables(Array<Renderable> renderables, Pool<Renderable> pool) {
 		instance.getRenderables(renderables, pool);
 	}
-
+	
 	@Override
 	public void Update() {
 		rigidbody.getMotionState().getWorldTransform(instance.transform);
-		instance.transform.scale(2.0f, 2, 2);
+		//instance.transform.scale(0.5f, 0.5F, 0.5F);
 		worldTransform.set(instance.transform);
 	}
 
@@ -92,6 +106,37 @@ public class PrimitiveCube extends PSObject {
 	public void setVelocity(Vector3 vel) {
 		rigidbody.setLinearVelocity(vel);
 		
+	}
+
+	@Override
+	public Matrix4 getMatrix() {
+		return worldTransform;
+	}
+
+	@Override
+	public Vector3 getVelocity() {
+		return null;
+	}
+
+	@Override
+	public Vector3 getSize() {
+		return boxExtent;
+	}
+
+	@Override
+	public void setMatrix(Matrix4 mat) {
+		rigidbody.getMotionState().setWorldTransform(mat);
+		worldTransform.set(mat);
+	}
+
+	@Override
+	public boolean needsNeetUpdate() {
+		if(Arrays.equals(lastnetup.val, worldTransform.val)){
+			return false;
+		}else{
+			lastnetup = worldTransform.cpy();
+			return true;
+		}
 	}
 	
 	

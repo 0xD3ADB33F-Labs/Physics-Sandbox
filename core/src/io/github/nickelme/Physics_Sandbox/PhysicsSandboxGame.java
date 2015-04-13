@@ -1,6 +1,10 @@
 package io.github.nickelme.Physics_Sandbox;
 
+import java.nio.Buffer;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.swing.JFileChooser;
@@ -10,6 +14,7 @@ import sun.security.krb5.internal.NetClient;
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputMultiplexer;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.controllers.ControllerListener;
 import com.badlogic.gdx.controllers.Controllers;
@@ -40,8 +45,14 @@ import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.Interpolation.Exp;
 import com.badlogic.gdx.physics.bullet.Bullet;
 import com.badlogic.gdx.physics.bullet.DebugDrawer;
+import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
+import com.badlogic.gdx.physics.bullet.collision.btBvhTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
+import com.badlogic.gdx.physics.bullet.collision.btConvexTriangleMeshShape;
+import com.badlogic.gdx.physics.bullet.collision.btHeightfieldTerrainShape;
 import com.badlogic.gdx.physics.bullet.collision.btStaticPlaneShape;
+import com.badlogic.gdx.physics.bullet.collision.btTriangleMeshShape;
+import com.badlogic.gdx.physics.bullet.collision.btTriangleMeshShapeData;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
@@ -59,45 +70,55 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 	private FirstPersonCameraController fpcontrol;
 	public PerspectiveCamera cam;
 	private ModelBatch modelBatch;
-	public List<PSObject> Objects = new ArrayList<PSObject>();
+	public HashMap<Long, PSObject> Objects = new HashMap<Long, PSObject>();
 	private PhysicsWorld world;
 	private Long lasttick;
 	private Environment env;
 	private PhysicUserInput physin;
-	private InputMultiplexer inplex;
+	public InputMultiplexer inplex;
 	private AssetManager assetman;
 	private Overlay overlay;
 	public Controller controllerClass;
 	private DebugDrawer dDrawer;
-	
-	private boolean iscoin = false;
-	
+
+	private Long nextID = 0l;
+
+	public boolean iscoin = false;
+
 	private static PhysicsSandboxGame instance;
-	
+
 	public boolean bDebugRender = false;
-	
+
 	private LeapController handController;
-	
-	
+
+	private ArrayList<PSObject> addObjects = new ArrayList<PSObject>();
+	private ArrayList<PSObject> removeObjects = new ArrayList<PSObject>();
+
+	//Networker mNetman;
+
 	@Override
 	public void create () {
+		float halfCubeLength = 0.5f/3f;
 		instance = this;
 		overlay = new Overlay(this);
 		controllerClass = new Controller(this);
-		
+
+		//mNetman = new Networker();
+
 		handController = new LeapController();
-		
-		
+
 		assetman = new AssetManager();
 		Bullet.init();
 		modelBatch = new ModelBatch();
-		
-		
+
+
 		cam = new PerspectiveCamera(90, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(100f, 0f, 100f);
+		cam.position.set(10f, 10f, 10f);
 		cam.lookAt(0,0,0);
-		cam.near = 2f;
-		cam.far = 1000000f;
+		cam.near = 0.01f;
+		cam.far = 1000f;
+		cam.up.x = 0.0f;
+		cam.up.z = 0.0f;
 		cam.update(true);
 
 		System.out.println("Width: " + Gdx.graphics.getWidth() + "\nHeight: " + Gdx.graphics.getHeight());
@@ -105,39 +126,46 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 
 		world = new PhysicsWorld();
 		//world.getWorld().setGravity(new Vector3());
-		Floor floor = new Floor(new Vector3(100000,1,100000),  new Matrix4(new Vector3(0,-5,0), new Quaternion(), new Vector3(1,1,1)));
+		Floor floor = new Floor(new Vector3(1000,2f,1000),  new Matrix4(new Vector3(0,0,0), new Quaternion(), new Vector3(1,1,1)));
 		//floor.SetColor(Color.DARK_GRAY);
-		Objects.add(floor);
-		world.AddObject(floor);
+
+		addObject(floor);
+
+
 		CreateCubeOfCubes();
-		
+
+
+
+
+
 		inplex = new InputMultiplexer();
 		physin = new PhysicUserInput(this);
-		
+
 
 		fpcontrol = new FirstPersonCameraController(cam);
-		fpcontrol.setVelocity(50.0f);
+		fpcontrol.setVelocity(5f);
 
 		Gdx.input.setInputProcessor(inplex);
-		
+
 
 		env = new Environment();
 		env.set(new ColorAttribute(ColorAttribute.AmbientLight, new Color(0.5f,0.5f,0.5f, 1.0f)));
-		env.add(new DirectionalLight().set(Color.WHITE, new Vector3(0,-90, 0)));
-		
+		env.add(new DirectionalLight().set(Color.WHITE, new Vector3(0,-45, 0)));
+
 		lasttick = System.currentTimeMillis();
 
-	    inplex.addProcessor(overlay.getStage());
-	    inplex.addProcessor(physin);
-	    inplex.addProcessor(fpcontrol);
-	    
-	    
-	    dDrawer = new DebugDrawer();
-	    dDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
+		inplex.addProcessor(overlay.getStage());
+		inplex.addProcessor(physin);
+		//inplex.addProcessor(physin);
+		inplex.addProcessor(fpcontrol);
 
-	    world.getWorld().setDebugDrawer(dDrawer);
-	   
-	    
+
+		dDrawer = new DebugDrawer();
+		dDrawer.setDebugMode(btIDebugDraw.DebugDrawModes.DBG_MAX_DEBUG_DRAW_MODE);
+
+		world.getWorld().setDebugDrawer(dDrawer);
+
+
 	}        
 
 	@Override
@@ -146,25 +174,27 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		cam.viewportWidth = height;
 		cam.update(true);
 		overlay.ScreenResized(width, height);
-		
+
 	};
 
 	@Override
 	public void render () {
-		Gdx.gl.glClearColor(0, 0, 0, 1);
+		//Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+		SyncObjects();
 		
 		world.Stimulate(Gdx.graphics.getDeltaTime());
-		fpcontrol.update();
-		cam.update(true);
-		for(int i = 0; i<Objects.size(); i++){
-			Objects.get(i).Update();
+		for(Long key : Objects.keySet()){
+			Objects.get(key).Update();
 		}
+		fpcontrol.update();
+		cam.update();
 		if (iscoin){
 			Vector3 vec = new Vector3();
-			for(int i = 0; i<Objects.size(); i++){
-				if((Objects.get(i) instanceof ModelObject)){
-					ModelObject obj = (ModelObject) Objects.get(i);
+			for(Long key : Objects.keySet()){
+				if((Objects.get(key) instanceof ModelObject)){
+					ModelObject obj = (ModelObject) Objects.get(key);
 					if(obj.getPath().equalsIgnoreCase("Quater/Quater.obj")){
 						vec = obj.getRigidBody().getWorldTransform().getTranslation(vec);
 						System.out.println(vec);
@@ -177,24 +207,56 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		}
 
 		modelBatch.begin(cam);
-		for(int i = 0; i <Objects.size(); i++){
-			modelBatch.render(Objects.get(i), env);
+		for(Long key : Objects.keySet()){
+			modelBatch.render(Objects.get(key), env);
 		}
-		
+
 		modelBatch.end();
 		if(bDebugRender){
 			dDrawer.begin(cam);
-	    	world.getWorld().debugDrawWorld();
-	    	dDrawer.end();
+			world.getWorld().debugDrawWorld();
+			dDrawer.end();
 		}
 		lasttick = System.currentTimeMillis();
-		
+
 		overlay.Draw();
 		controllerClass.Nudge();
-		
-		
+		//mNetman.NetworkUpdate();
+		//System.out.println(cam.direction);
 		//Explode(new Vector3(10, 10, 10), 1000, 1000);
-		
+
+	}
+
+	private void SyncObjects(){
+		for(PSObject obj : removeObjects){
+			if(Objects.containsKey(obj.getId())){
+				world.ClearObject(Objects.get(obj.getId()));
+				Objects.remove(obj.getId());
+			}
+		}
+		removeObjects.clear();
+
+		for(PSObject obj : addObjects){
+			if(obj.getId() != -1l){
+				if(Objects.containsKey(obj.getId())){
+					world.ClearObject(Objects.get(obj.getId()));
+					Objects.remove(obj.getId());
+				}
+				Objects.put(obj.getId(), obj);
+				world.AddObject(obj);
+			}else{
+				while(Objects.containsKey(nextID)){
+					nextID++;
+				}
+				
+				Objects.put(nextID, obj);
+				obj.setId(nextID);
+				world.AddObject(obj);
+				nextID++;
+			}
+
+		}
+		removeObjects.clear();
 	}
 
 	@Override
@@ -208,67 +270,72 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 		return cam;
 	}
 
-	public void addObject(PSObject obj){
-		Objects.add(obj);
-		world.AddObject(obj);
+	public void addObjectAt(PSObject obj, Long id){
+		obj.setId(id);
+		addObjects.add(obj);
+		removeObjects.remove(obj);
+
 	}
-	
+
+	public void addObject(PSObject obj){
+		obj.setId(-1l);
+		addObjects.add(obj);
+		removeObjects.remove(obj);
+	}
+
 	public AssetManager getAssetManager(){
 		return assetman;
 	}
-	
+
 	public void updateSliders(){
 		//rValue.
 	}
-	
+
 	public PhysicsWorld getPhysicsWorld(){
 		return world;
 	}
-	
+
 	public PhysicUserInput getPhysicsInput(){
 		return physin;
 	}
-	
+
 	public void ClearWorld(){
 		iscoin = false;
-		for(int i = 0; i<Objects.size(); i++){
-			if(!(Objects.get(i) instanceof Floor)){
-				world.ClearObject(Objects.get(i));
-				Objects.remove(i);
-				i--;
+		for(Long key : Objects.keySet()){
+			if(!(Objects.get(key) instanceof Floor)){
+				RemoveObject(Objects.get(key));
 			}
 		}
 	}
 
 	public void CreateCubeOfCubes() {
-		for(int x = 0; x < 8; x++){
-			for(int y=0; y < 8; y++){
-				for(int z=0; z< 8; z++){
-					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),z*10), new Quaternion(), new Vector3(1,1,1)));
-					Objects.add(cube);
-					world.AddObject(cube);
-					
+		for(int x = 0; x < 5; x++){
+			for(int y=0; y < 5; y++){
+				for(int z=0; z< 5; z++){
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(1,1,1), new Matrix4(new Vector3(x,(y + 1.5f),z), new Quaternion(), new Vector3(1,1,1)));
+					addObject(cube);
+
 				}
 			}
 		}
 	}
-	
+
 	public void CreateCubePyramid(){
-		for(int y = 6; y > 0; y--){
+		for(int y = 2; y > 0; y--){
 			for(int z = -y; z < y; z++){
 				for(int x = -y; x < y; x++){
-					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(5-y)*10,z*10), new Quaternion(), new Vector3(1,1,1)));
-					Objects.add(cube);
-					world.AddObject(cube);
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(1f,1f,1f), new Matrix4(new Vector3(x * 1f,(1 -y) + 2.5f,z * 1f), new Quaternion(), new Vector3(1,1,1)));
+					addObject(cube);
+
 				}
 			}
 		}
 	}
-	
-	
+
+
 	public void Explode(Vector3 loc, float size, float force){
-		for(int i = 0; i<Objects.size(); i++){
-			PSObject obj = Objects.get(i);
+		for(Long key : Objects.keySet()){
+			PSObject obj = Objects.get(key);
 			Matrix4 objtrans = obj.getRigidBody().getWorldTransform();
 			Vector3 objloc = new Vector3(0,0,0);
 			objtrans.getTranslation(objloc);
@@ -277,7 +344,7 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 				workvec.sub(loc);
 				workvec.nor();
 				workvec.scl(force);
-				
+
 				//System.out.println("\tAngle: " + Math.toDegrees((Math.atan2(loc.y-objloc.y, loc2d.dst(objloc2d)))));
 				if(!obj.getRigidBody().isActive()){
 					obj.getRigidBody().activate();
@@ -286,11 +353,11 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 			}
 		}
 	}
-	
+
 	public void FlipCoin(){
-		for(int i = 0; i<Objects.size(); i++){
-			if((Objects.get(i) instanceof ModelObject)){
-				ModelObject obj = (ModelObject) Objects.get(i);
+		for(Long key : Objects.keySet()){
+			if((Objects.get(key) instanceof ModelObject)){
+				ModelObject obj = (ModelObject) Objects.get(key);
 				if(obj.getPath().equalsIgnoreCase("Quater/Quater.obj")){
 					obj.getRigidBody().activate();
 					float flipforce = (float) (Math.random()*500+300);
@@ -300,76 +367,89 @@ public class PhysicsSandboxGame extends ApplicationAdapter {
 			}
 		}
 	}
-	
+
 	public void RemoveObject(PSObject obj){
-		world.ClearObject(obj);
-		Objects.remove(Objects.indexOf(obj));
+		removeObjects.add(obj);
+		addObjects.remove(obj);
 	}
-	
+
 	public static PhysicsSandboxGame getInstance(){
 		return instance;
 	}
-	
+
 	public PSObject getObjectAt(int i){
 		return Objects.get(i);
 	}
-	
+
 	public int getNumberOfObjects(){
 		return Objects.size();
 	}
-	
+
 	public void CreateCoinFlip(){
 		ModelObject obj = new ModelObject("Quater/Quater.obj", new Matrix4(new Vector3(0,30,0), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
-		Objects.add(obj);
-		world.AddObject(obj);
+		addObject(obj);
 		iscoin = true;
 	}
-	
+
 	public void CreateBowlingAlley(){
 		for(int i = 1; i<10; i++){
 			for(int j = 0; j<i; j++){
 				ModelObject obj = new ModelObject("BowlingPin/Bowling Pin.obj", new Matrix4(new Vector3(i*30.0f, 0.0f, (j*30.0f)-((i*30.0f)/2)), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
-				Objects.add(obj);
-				world.AddObject(obj);
+				addObject(obj);
 			}
 		}
 	}
-	
+
 	public void CustomCubeOfCubes(int a, int b, int c){
 		for(int x = 0; x < a; x++){
 			for(int y=0; y < b; y++){
 				for(int z=0; z< c; z++){
-					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,(y*10),z*10), new Quaternion(), new Vector3(1,1,1)));
-					Objects.add(cube);
-					world.AddObject(cube);
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(1,1,1), new Matrix4(new Vector3(x , y + 1.5f, z), new Quaternion(), new Vector3(1,1,1)));
+					addObject(cube);
 				}
 			}
 		}
 	}
-	
+
+
+
 	public void CustomPyramidOfCubes(int a){
 		for(int y = a; y > 0; y--){
 			for(int z = -y; z < y; z++){
 				for(int x = -y; x < y; x++){
-					PrimitiveCube cube = new PrimitiveCube(new Vector3(5,5,5), new Matrix4(new Vector3(x*10,((a-1)-y)*10,z*10), new Quaternion(), new Vector3(1,1,1)));
-					Objects.add(cube);
-					world.AddObject(cube);
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(1,1,1), new Matrix4(new Vector3(x*1,((a-1)-y)+ 2.5f,z*1), new Quaternion(), new Vector3(1,1,1)));
+					addObject(cube);
 				}
 			}
 		}
 	}
 	
-	public void chessGame(){
-		ModelObject obj = new ModelObject("ChessGame/chessboard.obj", new Matrix4(new Vector3(0, 0f,0), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
-		Objects.add(obj);
-		world.AddObject(obj);
+	public void CarTest(){
+		Vehicle veh = new Vehicle(new Vector3(10,2,2), new Matrix4(new Vector3(0,10,0), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)));
+		addObject(veh);
 	}
-	
+
+	public void chessGame(){
+		ModelObject obj = new ModelObject("ChessGame/table.obj", new Matrix4(new Vector3(0,0,0), new Quaternion(), new Vector3(1.0f, 1.0f, 1.0f)), false);
+		addObject(obj);
+		obj.rigidbody.setFriction(1f);
+		obj.rigidbody.setMassProps(27.2155422f*673.0f, new Vector3(0,0,0));
+		for(int y = 2; y > 0; y--){
+			for(int z = -y; z < y; z++){
+				for(int x = -y; x < y; x++){
+					PrimitiveCube cube = new PrimitiveCube(new Vector3(1f,1f,1f), new Matrix4(new Vector3(x*1f,((5-y) + 6)*1,z*1), new Quaternion(), new Vector3(1,1,1)));
+					addObject(cube);
+
+				}
+			}
+		}
+	}
+
 	public void resetCamera(){
-		cam.position.set(100f, 0f, 100f);
+		cam.position.set(10f, 10f, 10f);
 		cam.lookAt(0,0,0);
-		cam.near = 2f;
-		cam.far = 1000000f;
+		cam.near = 0.01f;
+		cam.far = 10000.0f;
 		cam.up.x = 0.0f;
 		cam.up.z = 0.0f;
 		cam.update(true);
@@ -382,43 +462,50 @@ class Floor extends PrimitiveCube{
 
 	public Floor(Vector3 size, Matrix4 transform) {
 		super(size, transform);
-		Texture tex = new Texture("Textures/floortex.png");
+		Texture tex = new Texture("Textures/dirt.png");
 		tex.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 		tex.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-		
-        ModelBuilder modelBuilder = new ModelBuilder();
-        
-        rendercube = modelBuilder.createBox(boxExtent.x, boxExtent.y, boxExtent.z, 
-            new Material(
-            		//ColorAttribute.createDiffuse(Color.GREEN),
-            		TextureAttribute.createDiffuse(tex)),
-            		Usage.Position | Usage.TextureCoordinates);
+
+		ModelBuilder modelBuilder = new ModelBuilder();
+
+		rendercube = modelBuilder.createBox(boxExtent.x, boxExtent.y, boxExtent.z, 
+				new Material(
+						//ColorAttribute.createDiffuse(Color.GREEN),
+						TextureAttribute.createDiffuse(tex)),
+						Usage.Position | Usage.TextureCoordinates);
 		for(int i = 0; i<rendercube.meshParts.size; i++){
 			Mesh curmesh = rendercube.meshParts.get(i).mesh;
 			int vertsize = curmesh.getVertexSize();
 			for(int j = 0; j<curmesh.getNumVertices(); j++){
 				float[] floats = new float[vertsize/4];
 				curmesh.getVertices(j * (vertsize/4),floats);
-				floats[3] *= 1000;
-				floats[4] *= 1000;
+				floats[3] *= 100;
+				floats[4] *= 100;
 				curmesh.updateVertices(j * (vertsize/4),floats);
 			}
 		}
-        
-        instance = new ModelInstance(rendercube);
+
+		instance = new ModelInstance(rendercube);
 	}
 
 	@Override
 	public btRigidBody getRigidBody() {
 		if(rigidbody == null){
-			btCollisionShape groundShape = new btStaticPlaneShape(new Vector3(0, 1, 0), 1);
-			btDefaultMotionState fallMotionState = new btDefaultMotionState(worldTransform);
-	        Vector3 fallInertia = new Vector3(0, 0, 0);
-	        groundShape.calculateLocalInertia(0, fallInertia);
-	        btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(0, fallMotionState, groundShape, fallInertia);
+			btCollisionShape groundShape = new btBvhTriangleMeshShape(rendercube.meshParts, true);
+			btDefaultMotionState fallMotionState = new btDefaultMotionState(worldTransform);//new Matrix4(new Quaternion(0,0,0,1)));
+			Vector3 fallInertia = new Vector3(0, 0, 0);
+			groundShape.calculateLocalInertia(0, fallInertia);
+			btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(0, fallMotionState, groundShape, fallInertia);
 			rigidbody = new btRigidBody(fallRigidBodyCI);
+			rigidbody.setRestitution(0.5f);
+			rigidbody.setFriction(1.0f);
 		}
 		return rigidbody;
+	}
+	
+	@Override
+	public void Update() {
+		worldTransform.set(instance.transform);
 	}
 
 }

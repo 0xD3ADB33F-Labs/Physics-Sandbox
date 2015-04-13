@@ -1,5 +1,6 @@
 package io.github.nickelme.Physics_Sandbox;
 
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -25,7 +26,7 @@ public class PrimitiveSphere extends PSObject{
 	btRigidBody rigidbody;
 	Matrix4 worldTransform;
 	Vector3 spheresize;
-	private float massmult = 1.0f;
+	private float density = 750.0f;
 	
 	public PrimitiveSphere(Vector3 size, Matrix4 transform){
 		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
@@ -46,21 +47,27 @@ public class PrimitiveSphere extends PSObject{
 	}
 
 	
-	public void setMassMultiplier(float pmassmult){
-		massmult = pmassmult;
-	}
+
 
 	@Override
 	public btRigidBody getRigidBody() {
 		if (rigidbody == null){
-			btCollisionShape fallshShape = new btSphereShape(spheresize.x);
+			btCollisionShape fallshShape = new btSphereShape(spheresize.x/2);
 			btDefaultMotionState motionstate = new btDefaultMotionState(worldTransform);
-			float mass = (4*(((float)Math.PI)*(spheresize.x * spheresize.x)))*massmult;
+			float mass = ((4/3)*(((float)Math.PI)*((spheresize.x * spheresize.x*spheresize.x)*0.0254f)))*density;
 			Vector3 fallinertia = new Vector3(0, 0, 0);
 			fallshShape.calculateLocalInertia(mass, fallinertia);
 			btRigidBodyConstructionInfo fallrigidbodyCI =new btRigidBodyConstructionInfo(mass, motionstate, fallshShape);
 			rigidbody = new btRigidBody(fallrigidbodyCI);
 			
+			//stuuff
+			rigidbody.setRestitution(0.5f);
+			rigidbody.setDamping(0.2f, 0.1f);
+			rigidbody.setGravity(new Vector3(0f, 0f, 0f));
+			//rigidbody.setAngularFactor(1f);
+			
+			//rigidbody.setAngularVelocity(new Vector3(0.0f,-1.5f,2f));
+			//rigidbody.setAnisotropicFriction(new Vector3(0.1f, 2f, 2f));
 		}
 		return rigidbody;
 	}
@@ -69,7 +76,7 @@ public class PrimitiveSphere extends PSObject{
 	@Override
 	public void Update() {
 		rigidbody.getMotionState().getWorldTransform(instance.transform);
-		instance.transform.scale(2.0f, 2.0f, 2.0f);
+		//instance.transform.scale(2.0f, 2.0f, 2.0f);
 		
 	}
 
@@ -85,8 +92,43 @@ public class PrimitiveSphere extends PSObject{
 
 	@Override
 	public void setVelocity(Vector3 vel) {
-		rigidbody.setLinearVelocity(vel);
+		if(rigidbody != null){
+			rigidbody.setLinearVelocity(vel);
+		}else{
+			getRigidBody().setLinearVelocity(vel);
+		}
+	}
+
+
+	@Override
+	public Matrix4 getMatrix() {
+		return null;
+	}
+
+
+	@Override
+	public Vector3 getVelocity() {
+		return null;
+	}
+
+
+	@Override
+	public Vector3 getSize() {
+		return null;
+	}
+
+
+	@Override
+	public void setMatrix(Matrix4 mat) {
+		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public boolean needsNeetUpdate() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 	
 	

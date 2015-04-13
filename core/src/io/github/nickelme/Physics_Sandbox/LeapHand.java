@@ -54,7 +54,7 @@ public class LeapHand extends PSObject {
 		Fingers = new HashMap<Finger.Type, HashMap<Bone.Type, LeapFinger>>();
 		worldTransform = new Matrix4();
 		localTransform = new Matrix4();
-		spheresize = new Vector3(hand.palmWidth()*LeapController.LEAP_SCALE_FACTOR, 5.0f, hand.palmWidth()*LeapController.LEAP_SCALE_FACTOR);
+		spheresize = new Vector3(hand.palmWidth()*LeapController.LEAP_SCALE_FACTOR, 5.0f*LeapController.LEAP_SCALE_FACTOR, hand.palmWidth()*LeapController.LEAP_SCALE_FACTOR);
 
 		Gdx.app.postRunnable(new Runnable(){
 
@@ -94,7 +94,7 @@ public class LeapHand extends PSObject {
 			halfsize.scl(0.5f);
 			btCollisionShape fallShape = new btBoxShape(halfsize);
 			btDefaultMotionState motionstate = new btDefaultMotionState(worldTransform);
-			float mass = 800.0f;
+			float mass = (float)((spheresize.x * spheresize.y * spheresize.z)*0.0254f)*LeapController.HUMAN_MASS_FACTOR;
 			Vector3 fallinertia = new Vector3(0, 0, 0);
 			fallShape.calculateLocalInertia(mass, fallinertia);
 			btRigidBodyConstructionInfo fallrigidbodyCI =new btRigidBodyConstructionInfo(mass, motionstate, fallShape);
@@ -114,7 +114,7 @@ public class LeapHand extends PSObject {
 		handOrigin.setX(handOrigin.getX()*LeapController.LEAP_SCALE_FACTOR);
 		handOrigin.setY(handOrigin.getY()*LeapController.LEAP_SCALE_FACTOR);
 		handOrigin.setZ(handOrigin.getZ()*LeapController.LEAP_SCALE_FACTOR);
-		handOrigin.setY(handOrigin.getY() - 100.0f);
+		handOrigin.setY(handOrigin.getY() - 100.0f*LeapController.LEAP_SCALE_FACTOR);
 		//handOrigin.setZ(handOrigin.getZ() + 50.0f);
 		//handOrigin = handOrigin.normalized();
 		Matrix handTransform = new Matrix(handXBasis, handYBasis, handZBasis, handOrigin);
@@ -163,7 +163,7 @@ public class LeapHand extends PSObject {
 			rot.setToWorld(Vector3.Zero, dir, Vector3.Y);
 			dir.nor();
 			Matrix4 trans = new Matrix4();
-			trans.setTranslation(0.0f, -50.0f, -100.0f);
+			trans.setTranslation(0.0f, -50.0f*LeapController.LEAP_SCALE_FACTOR, -100.0f*LeapController.LEAP_SCALE_FACTOR);
 			worldTransform.set(cam.position, new Quaternion()).mul(rot).mul(trans).mul(localTransform);
 			instance.transform.set(worldTransform);
 			//Matrix4 trans = instance.transform.cpy();
@@ -201,6 +201,36 @@ public class LeapHand extends PSObject {
 			}
 			Fingers.remove(curfgr);
 		}
+	}
+
+	@Override
+	public Matrix4 getMatrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector3 getVelocity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector3 getSize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMatrix(Matrix4 mat) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean needsNeetUpdate() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

@@ -102,7 +102,7 @@ public class LeapFinger extends PSObject {
 		Matrix basis = bone.basis();
 		basis.setOrigin(vec);
 		basis.setOrigin(basis.getOrigin().times(LeapController.LEAP_SCALE_FACTOR));
-		basis.getOrigin().setY(basis.getOrigin().getY() - 100.0f);
+		basis.getOrigin().setY(basis.getOrigin().getY() - 100.0f*LeapController.LEAP_SCALE_FACTOR);
 		//basis.getOrigin().setZ(basis.getOrigin().getZ() + 50.0f);
 		//Vector3 vec3 = new Vector3(vec.getX(), vec.getY(), vec.getZ());
 		//vec3.scl(LeapController.LEAP_SCALE_FACTOR);
@@ -126,7 +126,7 @@ public class LeapFinger extends PSObject {
 			halfsize.scl(0.5f);
 			btCollisionShape fallshShape = new btBoxShape(halfsize);
 			btDefaultMotionState motionstate = new btDefaultMotionState(worldTransform);
-			float mass = 100.0f;
+			float mass = (float)((fingerSize.x * fingerSize.y * fingerSize.z)*0.0254f)*LeapController.HUMAN_MASS_FACTOR;
 			Vector3 fallinertia = new Vector3(0, 0, 0);
 			fallshShape.calculateLocalInertia(mass, fallinertia);
 			btRigidBodyConstructionInfo fallrigidbodyCI =new btRigidBodyConstructionInfo(mass, motionstate, fallshShape);
@@ -152,7 +152,7 @@ public class LeapFinger extends PSObject {
 			Matrix4 rot = new Matrix4();
 			rot.setToWorld(Vector3.Zero, dir, Vector3.Y);
 			Matrix4 trans = new Matrix4();
-			trans.setTranslation(0.0f, -50.0f, -100.0f);
+			trans.setTranslation(0.0f, -50.0f*LeapController.LEAP_SCALE_FACTOR, -100.0f*LeapController.LEAP_SCALE_FACTOR);
 			worldTransform.set(cam.position, new Quaternion()).mul(rot).mul(trans).mul(localTransform);
 			//worldTransform.set(mParent.worldTransform).mul(localTransform);
 			instance.transform.set(worldTransform);
@@ -193,6 +193,36 @@ public class LeapFinger extends PSObject {
 	
 	public void CleanSelfUp(){
 		isAlive = false;
+	}
+
+	@Override
+	public Matrix4 getMatrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector3 getVelocity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector3 getSize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMatrix(Matrix4 mat) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean needsNeetUpdate() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

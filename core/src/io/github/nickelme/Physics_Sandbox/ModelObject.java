@@ -116,6 +116,7 @@ public class ModelObject extends PSObject {
 			btRigidBodyConstructionInfo fallRigidBodyCI = new btRigidBodyConstructionInfo(mass, fallMotionState, simplifiedConvexShape, fallInertia);
 			rigidbody = new btRigidBody(fallRigidBodyCI);
 			rigidbody.setSleepingThresholds(0.25f, 0.25f);
+			
 			//fallRigidBodyCI.dispose();
 		}
 		return rigidbody;
@@ -141,6 +142,36 @@ public class ModelObject extends PSObject {
 	public void setVelocity(Vector3 vel) {
 		rigidbody.setLinearVelocity(vel);
 
+	}
+
+	@Override
+	public Matrix4 getMatrix() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector3 getVelocity() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Vector3 getSize() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setMatrix(Matrix4 mat) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean needsNeetUpdate() {
+		// TODO Auto-generated method stub
+		return false;
 	}
 
 }

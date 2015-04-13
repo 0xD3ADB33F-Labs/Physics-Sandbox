@@ -98,7 +98,7 @@ public class Overlay{
 	    dimY = new TextField("", skin);
 	    dimZ = new TextField("", skin);
 	    baseSize = new TextField("", skin);
-	    baseLab = new Label("Enter Size of The Base", skin);
+	    baseLab = new Label("Number of Levels", skin);
 	    
 	    rSlider = new Slider(0,255,1,false,skin);
 	    gSlider = new Slider(0,255,1,false,skin);
@@ -163,7 +163,7 @@ public class Overlay{
         debugRender.setPosition(875f, 70f);
         
         selectBox = new SelectBox(skin, "default");
-        selectBox.setItems(new String[] {"8x8 Cube", "Pyramid", "Bowling Alley", "Custom Cube", "Custom Pyramid", "Coin Flip"});
+        selectBox.setItems(new String[] {"5x5 Cube", "Pyramid", "Bowling Alley", "Custom Cube", "Custom Pyramid", "Coin Flip", "Chess Game"});
         selectBox.setX(400f);
         selectBox.setY(500f);
         selectBox.setWidth(150f);
@@ -204,7 +204,7 @@ public class Overlay{
         
         baseSize.setPosition(18f, 380f);
         baseSize.setVisible(false);
-        baseSize.setMessageText("Base Size");
+        baseSize.setMessageText("Levels");
         
         customPyramid.setPosition(18f, 325f);
         customPyramid.setWidth(100f);
@@ -329,7 +329,7 @@ public class Overlay{
 	    
 	    resetWorld.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
-	    		if(selectBox.getSelected()=="8x8 Cube"){
+	    		if(selectBox.getSelected()=="5x5 Cube"){
 	    			psGame.resetCamera();
 	    			psGame.ClearWorld();
 					psGame.CreateCubeOfCubes();
@@ -352,12 +352,12 @@ public class Overlay{
 				}else if(selectBox.getSelected()=="Coin Flip"){
 					psGame.ClearWorld();
 					psGame.CreateCoinFlip();
-					
-				}
-	    			cubeCounter = 0;
-	    			
-	    		}
-	    	});
+				}else if (selectBox.getSelected()=="Chess Game"){
+					psGame.ClearWorld();
+					psGame.chessGame();
+				}	
+	    	}
+	    });
 	    debugRender.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
 	    		psGame.bDebugRender = !psGame.bDebugRender;
@@ -366,7 +366,7 @@ public class Overlay{
 	    
 	    selectBox.addListener(new ChangeListener(){
 			public void changed(ChangeEvent arg0, Actor arg1) {
-				if(selectBox.getSelected()=="8x8 Cube"){
+				if(selectBox.getSelected()=="5x5 Cube"){
 					psGame.resetCamera();
 					flipCoin.setVisible(false);
 					hideCubeVars();
@@ -404,6 +404,13 @@ public class Overlay{
 					psGame.ClearWorld();
 					psGame.CreateCoinFlip();
 					
+				}else if(selectBox.getSelected()=="Chess Game"){
+					psGame.resetCamera();
+					hidePyramidVars();
+					hideCubeVars();
+					flipCoin.setVisible(false);
+					psGame.ClearWorld();
+					psGame.chessGame();
 				}
 			}
 	    });

@@ -66,7 +66,7 @@ public class Controller extends ApplicationAdapter implements ControllerListener
 	   		if(controller.getAxis(DS4.AXIS_RIGHT_Y) > 0.2f || controller.getAxis(DS4.AXIS_RIGHT_Y) < -0.2f){
 	   			Vector3 tmp = new Vector3();
 	   			tmp.set(psGame.cam.direction).crs(psGame.cam.up).nor();
-	   			psGame.cam.rotate(tmp, controller.getAxis(DS4.AXIS_RIGHT_Y));
+	   			psGame.cam.rotate(tmp, -controller.getAxis(DS4.AXIS_RIGHT_Y));
 	   		}
 	   }
 	   

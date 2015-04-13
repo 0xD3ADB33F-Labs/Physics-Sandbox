@@ -14,7 +14,8 @@ import com.leapmotion.leap.Listener;
 
 public class LeapController extends Listener {
 
-	public final static float LEAP_SCALE_FACTOR = 0.5f;
+	public final static float LEAP_SCALE_FACTOR = 0.0393701f;
+	public final static float HUMAN_MASS_FACTOR = 985.0f;
 	
 	Controller control;
 

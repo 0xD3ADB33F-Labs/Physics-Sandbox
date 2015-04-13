@@ -5,8 +5,7 @@ import com.badlogic.gdx.physics.bullet.collision.btBroadphaseInterface;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btDbvtBroadphase;
 import com.badlogic.gdx.physics.bullet.collision.btDefaultCollisionConfiguration;
-import com.badlogic.gdx.physics.bullet.dynamics.btDiscreteDynamicsWorld;
-import com.badlogic.gdx.physics.bullet.dynamics.btSequentialImpulseConstraintSolver;
+import com.badlogic.gdx.physics.bullet.dynamics.*;
 
 public class PhysicsWorld {
 	
@@ -20,10 +19,11 @@ public class PhysicsWorld {
 	public PhysicsWorld(){
 		broadphase = new btDbvtBroadphase();
 		collisionConfiguration = new btDefaultCollisionConfiguration();
+		//collisionConfiguration.setConvexConvexMultipointIterations(3);
 		dispatcher = new btCollisionDispatcher(collisionConfiguration);
 		solver = new btSequentialImpulseConstraintSolver();
 		dynworld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-		dynworld.setGravity(new Vector3(0,-10,0));
+		dynworld.setGravity(new Vector3(0,-10.0f,0));
 	}
 	
 	
@@ -32,7 +32,7 @@ public class PhysicsWorld {
 	}
 	
 	public void Stimulate(float deltatime){
-		dynworld.stepSimulation(deltatime * stepSpeed, 8);
+		dynworld.stepSimulation(deltatime * stepSpeed, 8, 1.0f/240.0f);
 	}
 	
 	public float getStepSpeed(){

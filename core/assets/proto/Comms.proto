@@ -1,0 +1,84 @@
+package Physics_Sandbox;
+
+option java_package = "io.github.nickelme.Physics_Sandbox";
+option java_outer_classname = "Comms";
+
+message PSPacket {
+	extensions 100 to max;
+
+	enum PacketType{
+		SEND_OBJECTS = 0;
+		UPDATE_OBJECTS = 1;
+		CLEAR_WORLD = 2;
+	}
+
+	required PacketType PacketId = 1;
+}
+
+message Vector3{
+
+	required float X = 1;
+	required float Y = 2;
+	required float Z = 3;
+
+}
+
+message Matrix4{
+	required float m00 = 1;
+	required float m01 = 2;
+	required float m02 = 3;
+	required float m03 = 4;
+	required float m10 = 5;
+	required float m11 = 6;
+	required float m12 = 7;
+	required float m13 = 8;
+	required float m20 = 9;
+	required float m21 = 10;
+	required float m22 = 11;
+	required float m23 = 12;
+	required float m30 = 13;
+	required float m31 = 14;
+	required float m32 = 15;
+	required float m33 = 16;
+}
+
+message PSObject{
+	enum ObjectType{
+		CUBE = 0;
+		SPHERE = 1;
+	}
+
+	optional ObjectType type = 1;
+	optional Matrix4 Location = 2;
+	optional Vector3 Velocity = 3;
+	optional Vector3 Size = 4;
+	required int64 UOID = 5;
+
+}
+
+message PSSendObjectsPacket {
+
+	extend PSPacket{
+		optional PSSendObjectsPacket packet = 100;
+	}
+
+	repeated PSObject objects = 1;
+
+}
+
+message PSUpdateObjectsPacket{
+
+	extend PSPacket{
+		optional PSUpdateObjectsPacket packet = 101;
+	}
+
+	repeated PSObject objects = 1;
+}
+
+message PSClearWorldPacket {
+
+	extend PSPacket{
+		optional PSClearWorldPacket packet = 102;
+	}
+}
+

@@ -1,8 +1,11 @@
 package io.github.nickelme.Physics_Sandbox;
 
 import javax.swing.JFileChooser;
+
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
 
 public class PhysicUserInput implements InputProcessor {
@@ -79,7 +82,13 @@ public class PhysicUserInput implements InputProcessor {
 			
 		case Keys.F8:
 			psGame.ClearWorld();
-			psGame.chessGame();
+//			PrimitiveCube cube = new PrimitiveCube(new Vector3(1,1,1), new Matrix4(new Vector3(0,(2.0f),0), new Quaternion(), new Vector3(1,1,1)));
+			for(int i = 0; i < 10;i++){
+				PrimitiveCube cube = new PrimitiveCube(new Vector3(1,1,1), new Matrix4(new Vector3(i,1.5f, 0), new Quaternion(), new Vector3(1,1,1)));
+				psGame.addObject(cube);
+			}
+//			psGame.Objects.add(cube);
+//			world.AddObject(cube);
 			return true;
 			
 		case Keys.P:
@@ -92,6 +101,18 @@ public class PhysicUserInput implements InputProcessor {
 			
 		case Keys.F:
 			psGame.FlipCoin();
+			return true;
+			
+		case Keys.F3:
+			psGame.ClearWorld();
+			psGame.CarTest();
+			
+		case Keys.F9:
+			//psGame.mNetman.StartServer((short)7472);
+			return true;
+			
+		case Keys.F10:
+			//psGame.mNetman.ConnectToHost("127.0.0.1");
 			return true;
 		}
 		return false;
