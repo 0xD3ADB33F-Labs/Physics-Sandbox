@@ -65,6 +65,7 @@ public class Overlay{
     int cubeCounter;
     
     public Overlay(PhysicsSandboxGame curGame){
+    	
     	psGame = curGame;
     	fName = "PrimitiveSphere";
  
@@ -476,7 +477,7 @@ public class Overlay{
     public void Draw(){
     	Camera cam = psGame.getCamera();
 		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
-		cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z + "\n\nCurrent projectile: " + fName);
+		cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z + "\n\nCurrent projectile: " + fName + "\nVehicleSpeed" );
 		
 		cubeCount.setText("Number of cubes: " + cubeCounter + "\n");
 		

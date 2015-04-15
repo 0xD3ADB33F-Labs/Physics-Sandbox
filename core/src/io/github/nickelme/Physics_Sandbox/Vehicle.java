@@ -49,29 +49,30 @@ public class Vehicle extends PSObject implements InputProcessor{
 	private static float gEngineForce = 0.f;
 	private static float gBreakingForce = 0.f;
 
-	private static float maxEngineForce = 1000.f;//this should be engine/velocity dependent
+	private static float maxEngineForce = 5000.f;//this should be engine/velocity dependent
 	private static float maxBreakingForce = 100.f;
+	private static float boostAmount = 100.0f;
 
 
 	private static float gVehicleSteering = 0.3f;
 	private static float steeringIncrement = 0.04f;
-	private static float steeringClamp = 20f;
-	private static float wheelRadius = 1.f;
-	private static float wheelWidth = 0.8f;
-	private static float wheelFriction = 0.8f;//1e30f;
-	private static float suspensionStiffness = 75.f;
+	private static float steeringClamp = 1.0f;
+	private static float wheelRadius = 1.0f;
+	private static float wheelWidth = .75f;
+	private static float wheelFriction = 1.0f;//1e30f;
+	private static float suspensionStiffness = 100.f;
 	private static float suspensionDamping = 0.4f;
 	private static float suspensionCompression = 0.1f;
-	private static float rollInfluence = 0.1f;//1.0f;
+	private static float rollInfluence = 1.0f;//1.0f;
 
 	float connectionHeight = -0.5f;
-	float suspensionRestLength = 1.5f;
+	float suspensionRestLength = 0.5f;
 
 	private ModelInstance wheels[] = new ModelInstance[4];
 	private Model wheelsm[] = new Model[4];
 
 	public Vehicle(Vector3 size, Matrix4 transform){
-		density = 750.0f;
+		density = 500.0f;
 		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
 		boxExtent = size;
 		worldTransform = transform;
@@ -87,7 +88,7 @@ public class Vehicle extends PSObject implements InputProcessor{
 
 
 		for(int i = 0; i < 4; i++){
-			wheelsm[i] = modelBuilder.createBox(wheelRadius*2, wheelWidth, wheelRadius*2, new Material(ColorAttribute.createDiffuse(Color.BLUE)), Usage.Position | Usage.Normal);
+			wheelsm[i] = modelBuilder.createCylinder(wheelRadius*2, wheelWidth, wheelRadius*2, 32, new Material(ColorAttribute.createDiffuse(Color.BLUE)), Usage.Position | Usage.Normal);
 			wheels[i] = new ModelInstance(wheelsm[i]);
 		}
 		//PhysicsSandboxGame.getInstance().inplex.addProcessor(2, this);
@@ -180,7 +181,7 @@ public class Vehicle extends PSObject implements InputProcessor{
 				if(gEngineForce == 0){
 					gEngineForce = 1;
 				}
-				gEngineForce += gEngineForce *0.25;
+				gEngineForce += 20;
 				if(gEngineForce > maxEngineForce){
 					gEngineForce = maxEngineForce;
 				}
@@ -197,7 +198,7 @@ public class Vehicle extends PSObject implements InputProcessor{
 				gBreakingForce = 0;
 			}
 
-			if(Gdx.input.isKeyPressed(Keys.LEFT)){
+			if(Gdx.input.isKeyPressed(Keys.RIGHT)){
 				gVehicleSteering -= steeringIncrement;
 				if(gVehicleSteering < -steeringClamp){
 					gVehicleSteering = -steeringClamp;
@@ -206,12 +207,24 @@ public class Vehicle extends PSObject implements InputProcessor{
 				}
 			}
 
-			if(Gdx.input.isKeyPressed(Keys.RIGHT)){
+			if(Gdx.input.isKeyPressed(Keys.LEFT)){
 				gVehicleSteering += steeringIncrement;
 				if(gVehicleSteering < -steeringClamp){
 					gVehicleSteering = -steeringClamp;
 				}else if(gVehicleSteering > steeringClamp){
 					gVehicleSteering = steeringClamp;
+				}
+			}
+			
+			if(!Gdx.input.isKeyPressed(Keys.RIGHT) && !Gdx.input.isKeyPressed(Keys.LEFT)){
+				if(gVehicleSteering > 0 && gVehicleSteering > steeringIncrement){
+					gVehicleSteering -= steeringIncrement;
+				}else if(gVehicleSteering < 0 && gVehicleSteering < -steeringIncrement){
+					gVehicleSteering += steeringIncrement;		
+				}else if(gVehicleSteering < 0 && gVehicleSteering > -steeringIncrement){
+					gVehicleSteering = 0;					
+				}else if(gVehicleSteering > 0 && gVehicleSteering < steeringIncrement){
+					gVehicleSteering = 0;
 				}
 			}
 
