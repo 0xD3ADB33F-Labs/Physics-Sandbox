@@ -1,7 +1,6 @@
 package io.github.nickelme.Physics_Sandbox;
 
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g3d.particles.influencers.DynamicsModifier.Angular;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
@@ -30,7 +29,7 @@ public class ObjectThrower {
 		psGame.addObject(sphere);
 		sphere.setVelocity(dir);
 		//Vector3 directions = setSphereDirection(camDir);
-		float throwDirection = calculateThrowDirection(psGame.cam.direction.x);
+		float throwDirection = calculateThrowDirection(psGame.getCam().direction.x);
 		sphere.rigidbody.setAngularVelocity(new Vector3( throwDirection,0, 0));
 	}
 	

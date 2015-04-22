@@ -2,7 +2,6 @@ package io.github.nickelme.Physics_Sandbox;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Set;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
@@ -14,15 +13,12 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.Renderable;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Quaternion;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btActivatingCollisionAlgorithm;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
@@ -65,7 +61,7 @@ public class LeapHand extends PSObject {
 
 				instance = new ModelInstance(renderhand);
 				PhysicsSandboxGame psGame = PhysicsSandboxGame.getInstance();
-				Camera cam = PhysicsSandboxGame.getInstance().cam;
+				Camera cam = PhysicsSandboxGame.getInstance().getCam();
 				Vector3 dir = cam.direction.cpy();
 				dir.x = -dir.x;
 				dir.y = 0;
@@ -154,8 +150,9 @@ public class LeapHand extends PSObject {
 	@Override
 	public void Update() {
 		if(instance != null){
+			@SuppressWarnings("unused")
 			Vector3 loc = new Vector3();
-			Camera cam = PhysicsSandboxGame.getInstance().cam;
+			Camera cam = PhysicsSandboxGame.getInstance().getCam();
 			Vector3 dir = cam.direction.cpy();
 			dir.x = -dir.x;
 			dir.y = 0;

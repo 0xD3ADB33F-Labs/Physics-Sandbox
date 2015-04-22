@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import com.leapmotion.leap.Controller;
 import com.leapmotion.leap.Frame;
@@ -33,6 +32,7 @@ public class LeapController extends Listener {
 	}
 
 	public void onFrame(Controller controller) {
+		@SuppressWarnings("unused")
 		PhysicsSandboxGame psGame = PhysicsSandboxGame.getInstance();
 		Frame frame = controller.frame();
 		HandList handlist = frame.hands();

@@ -36,14 +36,13 @@ public class PrimitiveCube extends PSObject {
 	
 	public PrimitiveCube(Vector3 size, Matrix4 transform) {
 		density = 750.0f;
-		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
 		boxExtent = size;
 		worldTransform = transform;
         ModelBuilder modelBuilder = new ModelBuilder();
         rendercube = modelBuilder.createBox(boxExtent.x , boxExtent.y, boxExtent.z, 
             new Material(
             		//ColorAttribute.createDiffuse(Color.GREEN),
-            		ColorAttribute.createDiffuse(colors[1 + (int)(Math.random() * ((14 - 1) + 1))])),
+            		ColorAttribute.createDiffuse(colors[(int)(Math.random() * ((14)))])),
             		Usage.Position | Usage.Normal);
         
         instance = new ModelInstance(rendercube);

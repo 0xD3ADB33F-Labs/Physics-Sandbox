@@ -1,7 +1,5 @@
 package io.github.nickelme.Physics_Sandbox;
 
-import sun.rmi.server.Dispatcher;
-
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
@@ -13,12 +11,9 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.bullet.collision.ContactResultCallback;
-import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
-import com.badlogic.gdx.physics.bullet.collision.btDispatcher;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
-import com.badlogic.gdx.physics.bullet.collision.btPersistentManifold;
 import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
@@ -123,7 +118,7 @@ public class BombObject extends PSObject {
 		instance.transform.scale(2.0f, 2, 2);
 		worldTransform.set(instance.transform);
 		worldTransform.getTranslation(loc);
-		ps.Explode(loc, ExplodeSize, ExplodeForce);
+		ps.getStructures().Explode(loc, ExplodeSize, ExplodeForce);
 		hasExploded = true;
 	}
 

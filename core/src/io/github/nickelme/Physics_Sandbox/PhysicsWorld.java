@@ -26,7 +26,6 @@ public class PhysicsWorld {
 		dynworld.setGravity(new Vector3(0,-10.0f,0));
 	}
 	
-	
 	public void AddObject(PSObject object){
 		dynworld.addRigidBody(object.getRigidBody());
 	}

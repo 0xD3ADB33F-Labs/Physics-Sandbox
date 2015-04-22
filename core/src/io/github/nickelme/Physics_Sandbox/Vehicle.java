@@ -14,16 +14,13 @@ import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogic.gdx.physics.bullet.collision.btActivatingCollisionAlgorithm;
 import com.badlogic.gdx.physics.bullet.collision.btBoxShape;
-import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btDefaultVehicleRaycaster;
 import com.badlogic.gdx.physics.bullet.dynamics.btRaycastVehicle;
 import com.badlogic.gdx.physics.bullet.dynamics.btRaycastVehicle.btVehicleTuning;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
-import com.badlogic.gdx.physics.bullet.dynamics.btVehicleRaycaster;
 import com.badlogic.gdx.physics.bullet.dynamics.btWheelInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
 import com.badlogic.gdx.utils.Array;
@@ -49,8 +46,9 @@ public class Vehicle extends PSObject implements InputProcessor{
 	private static float gEngineForce = 0.f;
 	private static float gBreakingForce = 0.f;
 
-	private static float maxEngineForce = 5000.f;//this should be engine/velocity dependent
+	private static float maxEngineForce = 600.f;//this should be engine/velocity dependent
 	private static float maxBreakingForce = 100.f;
+	@SuppressWarnings("unused")
 	private static float boostAmount = 100.0f;
 
 
@@ -70,17 +68,19 @@ public class Vehicle extends PSObject implements InputProcessor{
 
 	private ModelInstance wheels[] = new ModelInstance[4];
 	private Model wheelsm[] = new Model[4];
-
+	boolean accelerating;
+	boolean braking;
+	boolean turningLeft;
+	boolean turningRight;
 	public Vehicle(Vector3 size, Matrix4 transform){
 		density = 500.0f;
-		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
 		boxExtent = size;
 		worldTransform = transform;
 		ModelBuilder modelBuilder = new ModelBuilder();
 		rendercube = modelBuilder.createBox(boxExtent.x, boxExtent.y, boxExtent.z, 
 				new Material(
 						//ColorAttribute.createDiffuse(Color.GREEN),
-						ColorAttribute.createDiffuse(colors[1 + (int)(Math.random() * ((14 - 1) + 1))])),
+						ColorAttribute.createDiffuse(colors[(int)(Math.random() * ((14)))])),
 						Usage.Position | Usage.Normal);
 
 		instance = new ModelInstance(rendercube);
@@ -173,59 +173,38 @@ public class Vehicle extends PSObject implements InputProcessor{
 		return rigidbody;
 	}
 
+	@SuppressWarnings("unused")
 	@Override
 	public void Update() {
+		
+		
 		if(rigidbody != null){
-
-			if(Gdx.input.isKeyPressed(Keys.UP)){
-				if(gEngineForce == 0){
-					gEngineForce = 1;
-				}
-				gEngineForce += 20;
-				if(gEngineForce > maxEngineForce){
-					gEngineForce = maxEngineForce;
-				}
-			}else{
+			
+			
+			if(accelerating || Gdx.input.isKeyPressed(Keys.UP)){
+				accelerate();
+			}else if (!accelerating){
 				gEngineForce = 0;
 			}
 
-			if(Gdx.input.isKeyPressed(Keys.DOWN)){
-				gBreakingForce += 10;
-				if(gBreakingForce > maxBreakingForce){
-					gBreakingForce = maxBreakingForce;
-				}
+			if(braking || Gdx.input.isKeyPressed(Keys.DOWN)){
+				brake();
 			}else{
 				gBreakingForce = 0;
 			}
 
-			if(Gdx.input.isKeyPressed(Keys.RIGHT)){
-				gVehicleSteering -= steeringIncrement;
-				if(gVehicleSteering < -steeringClamp){
-					gVehicleSteering = -steeringClamp;
-				}else if(gVehicleSteering > steeringClamp){
-					gVehicleSteering = steeringClamp;
-				}
+			if(turningRight || Gdx.input.isKeyPressed(Keys.RIGHT)){
+				turnRight();
+				turningRight = false;
 			}
 
-			if(Gdx.input.isKeyPressed(Keys.LEFT)){
-				gVehicleSteering += steeringIncrement;
-				if(gVehicleSteering < -steeringClamp){
-					gVehicleSteering = -steeringClamp;
-				}else if(gVehicleSteering > steeringClamp){
-					gVehicleSteering = steeringClamp;
-				}
+			if(turningLeft || Gdx.input.isKeyPressed(Keys.LEFT)){
+				turnLeft();
+				turningLeft = false;
 			}
 			
-			if(!Gdx.input.isKeyPressed(Keys.RIGHT) && !Gdx.input.isKeyPressed(Keys.LEFT)){
-				if(gVehicleSteering > 0 && gVehicleSteering > steeringIncrement){
-					gVehicleSteering -= steeringIncrement;
-				}else if(gVehicleSteering < 0 && gVehicleSteering < -steeringIncrement){
-					gVehicleSteering += steeringIncrement;		
-				}else if(gVehicleSteering < 0 && gVehicleSteering > -steeringIncrement){
-					gVehicleSteering = 0;					
-				}else if(gVehicleSteering > 0 && gVehicleSteering < steeringIncrement){
-					gVehicleSteering = 0;
-				}
+			if(!turningLeft && !turningRight){
+				resetDirection();
 			}
 
 			int wheelIndex = 2;
@@ -254,7 +233,7 @@ public class Vehicle extends PSObject implements InputProcessor{
 			instance.transform.set(veh.getChassisWorldTransform());
 			Vector3 vehtarget = new Vector3();
 			veh.getChassisWorldTransform().getTranslation(vehtarget);
-			Camera cam = PhysicsSandboxGame.getInstance().cam;
+			Camera cam = PhysicsSandboxGame.getInstance().getCam();
 			Vector3 camloc = new Vector3();
 			camloc = cam.position.cpy();
 			camloc.y = (15.0f*camloc.y + vehtarget.y + 5.f) / 16.0f;
@@ -281,13 +260,70 @@ public class Vehicle extends PSObject implements InputProcessor{
 
 			cam.up.x = 0.0f;
 			cam.up.z = 0.0f;
-			PhysicsSandboxGame.getInstance().cam.lookAt(instance.transform.getTranslation(new Vector3()));
+			PhysicsSandboxGame.getInstance().getCam().lookAt(instance.transform.getTranslation(new Vector3()));
 			cam.position.set(camloc);
-			System.out.println("Speed: " + veh.getCurrentSpeedKmHour() + "Km/h");
+			
+			
+			
+			
 		}
 
 	}
-
+	
+	public void turnLeft() {
+		turningLeft = true;
+		gVehicleSteering += steeringIncrement;
+		if(gVehicleSteering < -steeringClamp){
+			gVehicleSteering = -steeringClamp;
+		}else if(gVehicleSteering > steeringClamp){
+			gVehicleSteering = steeringClamp;
+		}
+	}
+	
+	public void turnRight() {
+		turningLeft = false;
+		gVehicleSteering -= steeringIncrement;
+		if(gVehicleSteering < -steeringClamp){
+			gVehicleSteering = -steeringClamp;
+		}else if(gVehicleSteering > steeringClamp){
+			gVehicleSteering = steeringClamp;
+		}
+	}
+	
+	public void brake() {
+		accelerating = false;
+		braking = true;
+		gBreakingForce += 10;
+		if(gBreakingForce > maxBreakingForce){
+			gBreakingForce = maxBreakingForce;
+		}
+	}
+	
+	public void accelerate() {
+		braking = false;
+		accelerating = true;
+		if(gEngineForce == 0){
+			gEngineForce = 1;
+		}
+		gEngineForce += 10;
+		if(gEngineForce > (maxEngineForce / 1.5f)){
+			gEngineForce = maxEngineForce;
+		}
+	}
+	
+	public void resetDirection() {
+		if(gVehicleSteering > 0 && gVehicleSteering > steeringIncrement){
+			gVehicleSteering -= steeringIncrement;
+		}else if(gVehicleSteering < 0 && gVehicleSteering < -steeringIncrement){
+			gVehicleSteering += steeringIncrement;		
+		}else if(gVehicleSteering < 0 && gVehicleSteering > -steeringIncrement){
+			gVehicleSteering = 0;					
+		}else if(gVehicleSteering > 0 && gVehicleSteering < steeringIncrement){
+			gVehicleSteering = 0;
+		}
+	}
+	
+	
 	@Override
 	public void setLocation(Vector3 location) {
 		// TODO Auto-generated method stub
@@ -379,6 +415,10 @@ public class Vehicle extends PSObject implements InputProcessor{
 	public boolean scrolled(int amount) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+	public float getSpeed(){
+		float velocity = Math.abs(veh.getCurrentSpeedKmHour());
+		return velocity;
 	}
 
 }

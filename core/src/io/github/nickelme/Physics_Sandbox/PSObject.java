@@ -1,5 +1,6 @@
 package io.github.nickelme.Physics_Sandbox;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g3d.RenderableProvider;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
@@ -9,8 +10,9 @@ public abstract class PSObject implements RenderableProvider {
 
 	public abstract btRigidBody getRigidBody();
 	
-	private Long Id;
+	private Long Id; 
 	
+	protected Color[] colors = {Color.BLUE, Color.CYAN, Color.GRAY, Color.GREEN, Color.MAGENTA, Color.MAROON, Color.NAVY, Color.OLIVE, Color.ORANGE, Color.PINK, Color.PURPLE, Color.RED, Color.TEAL, Color.WHITE, Color.YELLOW};	
 	public Long getId(){
 		return Id;
 	}

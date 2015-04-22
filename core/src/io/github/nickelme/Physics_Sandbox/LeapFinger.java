@@ -19,7 +19,6 @@ import com.badlogic.gdx.physics.bullet.collision.btCollisionObject;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionObjectWrapper;
 import com.badlogic.gdx.physics.bullet.collision.btCollisionShape;
 import com.badlogic.gdx.physics.bullet.collision.btManifoldPoint;
-import com.badlogic.gdx.physics.bullet.collision.btSphereShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btHingeConstraint;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
@@ -145,7 +144,7 @@ public class LeapFinger extends PSObject {
 		if(instance != null){
 			Vector3 prevloc = new Vector3();
 			Vector3 loc = new Vector3();
-			Camera cam = PhysicsSandboxGame.getInstance().cam;
+			Camera cam = PhysicsSandboxGame.getInstance().getCam();
 			Vector3 dir = cam.direction.cpy();
 			dir.x = -dir.x;
 			dir.y = 0;

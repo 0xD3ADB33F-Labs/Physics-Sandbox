@@ -1,7 +1,5 @@
 package io.github.nickelme.Physics_Sandbox;
 
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Material;
 import com.badlogic.gdx.graphics.g3d.Model;
@@ -29,7 +27,6 @@ public class PrimitiveSphere extends PSObject{
 	private float density = 750.0f;
 	
 	public PrimitiveSphere(Vector3 size, Matrix4 transform){
-		Color[] colors = {Color.RED,Color.ORANGE,Color.YELLOW,Color.GREEN,Color.BLUE,Color.PINK,Color.PURPLE,Color.WHITE,Color.CYAN,Color.DARK_GRAY,Color.MAGENTA,Color.MAROON,Color.NAVY,Color.OLIVE,Color.TEAL};
 		worldTransform = transform;
 		spheresize = size;
 		ModelBuilder modelbuilder = new ModelBuilder();

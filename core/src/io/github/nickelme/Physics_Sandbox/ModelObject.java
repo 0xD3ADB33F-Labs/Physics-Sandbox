@@ -2,7 +2,6 @@ package io.github.nickelme.Physics_Sandbox;
 
 import java.nio.ShortBuffer;
 import java.util.HashMap;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.loaders.ModelLoader;
 import com.badlogic.gdx.graphics.Mesh;
@@ -13,13 +12,11 @@ import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.math.collision.BoundingBox;
-import com.badlogic.gdx.physics.bullet.collision.btConcaveShape;
 import com.badlogic.gdx.physics.bullet.collision.btConvexHullShape;
 import com.badlogic.gdx.physics.bullet.collision.btConvexShape;
 import com.badlogic.gdx.physics.bullet.collision.btConvexTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.collision.btShapeHull;
 import com.badlogic.gdx.physics.bullet.collision.btTriangleMesh;
-import com.badlogic.gdx.physics.bullet.collision.btTriangleMeshShape;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody;
 import com.badlogic.gdx.physics.bullet.dynamics.btRigidBody.btRigidBodyConstructionInfo;
 import com.badlogic.gdx.physics.bullet.linearmath.btDefaultMotionState;
@@ -43,6 +40,7 @@ public class ModelObject extends PSObject {
 		if(loadedmodels.containsKey(path)){
 			objModel = loadedmodels.get(ModelPath);
 		}else{
+			@SuppressWarnings("rawtypes")
 			ModelLoader loader = new ObjLoader();
 			if(isabsolute){
 				objModel = loader.loadModel(Gdx.files.absolute(ModelPath));

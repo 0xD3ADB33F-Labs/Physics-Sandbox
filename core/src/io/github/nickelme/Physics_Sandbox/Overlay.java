@@ -5,9 +5,7 @@ import javax.swing.JFileChooser;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -22,60 +20,37 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class Overlay{
 	private PhysicsSandboxGame psGame;
-
-	JFileChooser fc = new JFileChooser(".");
-	boolean shootsphere = true;
+	private JFileChooser fc = new JFileChooser(".");
 	private Skin skin;
 	private Stage stage;
 	private SpriteBatch spriteBatch;
-    
-    TextButton increaseButton;
-    TextButton decreaseButton;
-    TextButton resetButton;
-    TextButton importModel;
-    TextButton resetModel;
-    TextButton resetWorld;
-    TextButton debugRender;
-    TextButton customCube, customPyramid;
-    TextButton flipCoin;
-    
-    
-    Label fps;
-    Label cameraInfo;
-    Label stepSpeed;
-    Label cLabel;
-    Label rVal;
-    Label gVal;
-    Label bVal;
-    Label cubeCount;
-    Label cCubeDims,baseLab;
-    Label controllerInfo;
-    
-    
-    Slider rSlider;
-    Slider gSlider;
-    Slider bSlider;
-    Slider physSlider;
-    String fName;
-    BitmapFont font;
-    SelectBox selectBox;
-    
-    final TextField dimX,dimY,dimZ,baseSize;
-    
-    int cubeCounter;
-    
+    private TextButton resetButton;
+    private TextButton importModel;
+    private TextButton resetModel;
+    private TextButton resetWorld;
+    private TextButton debugRender;
+    private TextButton customCube, customPyramid;
+    private TextButton flipCoin;
+    private Label fps;
+    private Label cameraInfo;
+    private Label stepSpeed;
+    private Label cLabel;
+    private Label cCubeDims,baseLab;
+    private Label controllerInfo;
+    private Slider physSlider;
+    private String fName;
+    private SelectBox<String> selectBox;
+    private TextField dimX,dimY,dimZ,baseSize;
+    private Label cubeCounter;
+    private Structures structures;
     public Overlay(PhysicsSandboxGame curGame){
-    	
     	psGame = curGame;
+    	structures = new Structures(curGame);
     	fName = "PrimitiveSphere";
- 
+    	
 		spriteBatch = new SpriteBatch();
 		skin = new Skin(Gdx.files.internal("data/uiskin.json"));
 		stage = new Stage();
-		
-		
-	    increaseButton = new TextButton("Step Speed +", skin, "default");
-	    decreaseButton = new TextButton("Step Speed -", skin, "default");
 	    resetButton = new TextButton("Reset Step Speed", skin, "default");;
 	    importModel = new TextButton("Import Wavefront Model", skin, "default");
 	    resetModel = new TextButton("Reset Model to Sphere", skin, "default");
@@ -85,25 +60,18 @@ public class Overlay{
 	    customPyramid = new TextButton("Create", skin, "default");
 	    flipCoin = new TextButton("Flip Coin", skin, "default");
 	    controllerInfo = new Label("DualShock 4 Wireless Controller: Connected", skin, "default");
-	    
+	    cubeCounter = new Label("Number of objects: ", skin, "default");
 	    fps = new Label("FPS: " + Gdx.graphics.getFramesPerSecond(), skin, "default");
 	    cameraInfo = new Label("", skin);
 	    stepSpeed = new Label("Physics step speed: 1", skin, "default");
 	    cLabel = new Label("Camera position", skin, "default");
-	    rVal = new Label("R: ", skin, "default");
-	    gVal = new Label("G: ", skin, "default");
-	    bVal = new Label("B: ", skin, "default");
-	    cubeCount = new Label("Number of cubes: ", skin, "default");
 	    cCubeDims = new Label("Enter Dimensions:\n\nX:\n\n\nY:\n\n\nZ:", skin, "default");
 	    dimX = new TextField("", skin);
 	    dimY = new TextField("", skin);
 	    dimZ = new TextField("", skin);
 	    baseSize = new TextField("", skin);
 	    baseLab = new Label("Number of Levels", skin);
-	    
-	    rSlider = new Slider(0,255,1,false,skin);
-	    gSlider = new Slider(0,255,1,false,skin);
-	    bSlider = new Slider(0,255,1,false,skin);
+	   
 	    physSlider = new Slider(-10f, 10f, 0.25f, false, skin); 
     	
     	
@@ -127,29 +95,12 @@ public class Overlay{
         
         cameraInfo.setPosition(width - (width * 0.99f), height - (height / 10f) - 20f);
         
-        cubeCount.setPosition(width - (width * 0.99f), height - (height / 10f) - 100f);
+        cubeCounter.setPosition(width - (width * 0.99f), height - (height / 10f) - 110f);
         
         cLabel.setPosition(width - (width * 0.99f), height - (height / 20f));
         
         stepSpeed.setPosition(width - (width * 0.99f), 80f);
         
-        rSlider.setVisible(true);
-        rSlider.setPosition(15f, 85f);
-        rSlider.setRange(0f, 255f);
-        rVal.setPosition(160f, 85f);
-       // rSlider.setValue(0f);
-        
-        gSlider.setVisible(true);
-        gSlider.setPosition(15f, 65f);
-        gSlider.setRange(0f, 255f);
-        gVal.setPosition(160f, 65f);
-      //  gSlider.setValue(255f);
-        
-        bSlider.setVisible(true);
-        bSlider.setPosition(15f, 45f);
-        bSlider.setRange(0f, 255f);
-        bVal.setPosition(160f, 45f);
-       // bSlider.setValue(255f);\
         
         physSlider.setPosition(15f, 60f);
         physSlider.setRange(-10f, 10f);
@@ -163,12 +114,12 @@ public class Overlay{
         debugRender.setHeight(30f);
         debugRender.setPosition(875f, 70f);
         
-        selectBox = new SelectBox(skin, "default");
-        selectBox.setItems(new String[] {"5x5 Cube", "Pyramid", "Bowling Alley", "Custom Cube", "Custom Pyramid", "Coin Flip", "Chess Game"});
-        selectBox.setX(400f);
-        selectBox.setY(500f);
-        selectBox.setWidth(150f);
-        selectBox.setPosition(width - (width * 0.99f), height - (height / 5f) - 100f);
+        setSelectBox(new SelectBox<String>(skin, "default"));
+        getSelectBox().setItems(new String[] {"5x5 Cube", "Pyramid", "Bowling Alley", "Custom Cube", "Custom Pyramid", "Coin Flip", "Chess Game", "Vehicle"});
+        getSelectBox().setX(400f);
+        getSelectBox().setY(500f);
+        getSelectBox().setWidth(150f);
+        getSelectBox().setPosition(width - (width * 0.99f), height - (height / 5f) - 100f);
         
         customCube.setWidth(100f);
         customCube.setHeight(30f);
@@ -244,51 +195,6 @@ public class Overlay{
 	    	}
 	    });
 	    
-	    rSlider.addListener(new ChangeListener() {
-			
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Slider slider = (Slider) actor;
-				float value = slider.getValue();
-				
-				if (value == 0){
-					rVal.setText("R: " + 0);
-				}else{
-					rVal.setText("R: " + (int) value);
-				}
-			}
-		});
-	    
-	    gSlider.addListener(new ChangeListener() {
-			
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Slider slider = (Slider) actor;
-				float value = slider.getValue();
-				
-				if (value == 0){
-					gVal.setText("R: " + 0);
-				}else{
-					gVal.setText("R: " + (int) value);
-				}
-			}
-		});
-	    
-	    bSlider.addListener(new ChangeListener() {
-			
-			@Override
-			public void changed(ChangeEvent event, Actor actor) {
-				Slider slider = (Slider) actor;
-				float value = slider.getValue();
-				
-				if (value == 0){
-					bVal.setText("R: " + 0);
-				}else{
-					bVal.setText("R: " + (int) value);
-				}
-			}
-		});
-	    
 	    physSlider.addListener(new ChangeListener(){
 	    	public void changed(ChangeEvent event, Actor actor){
 	    		Slider slider = (Slider) actor;
@@ -330,33 +236,29 @@ public class Overlay{
 	    
 	    resetWorld.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
-	    		if(selectBox.getSelected()=="5x5 Cube"){
-	    			psGame.resetCamera();
-	    			psGame.ClearWorld();
-					psGame.CreateCubeOfCubes();
-				}else if(selectBox.getSelected()=="Pyramid"){
-					psGame.ClearWorld();
-					psGame.CreateCubePyramid();
-				}else if(selectBox.getSelected()=="Bowling Alley"){
-					psGame.ClearWorld();
-					psGame.CreateBowlingAlley();
-				}else if (selectBox.getSelected()=="Custom Cube"){
-					psGame.ClearWorld();
-		    		psGame.CustomCubeOfCubes(Integer.parseInt(dimX.getText()), Integer.parseInt(dimY.getText()), Integer.parseInt(dimZ.getText()));
-					showCubeVars();
-					disableCubeVars();
-				}else if (selectBox.getSelected()=="Custom Pyramid"){
-					psGame.ClearWorld();
-		    		psGame.CustomPyramidOfCubes(Integer.parseInt(baseSize.getText()));
-		    		showPyramidVars();
-		    		disablePyramidVars();
-				}else if(selectBox.getSelected()=="Coin Flip"){
-					psGame.ClearWorld();
-					psGame.CreateCoinFlip();
-				}else if (selectBox.getSelected()=="Chess Game"){
-					psGame.ClearWorld();
-					psGame.chessGame();
-				}	
+	    		if (structures.getCurrentStructureId() == structures.EMPTY_WORLD) {
+	    			structures.createSimpleStructure(structures.EMPTY_WORLD);
+	    		}else if (structures.getCurrentStructureId() == structures.DEFAULT_CUBE) {
+	    			structures.createSimpleStructure(structures.DEFAULT_CUBE);
+	    		}else if (structures.getCurrentStructureId() == structures.DEFAULT_PYRAMID) {
+	    			structures.createSimpleStructure(structures.DEFAULT_PYRAMID);
+	    		}else if (structures.getCurrentStructureId() == structures.CUSTOM_CUBE) {
+	    			structures.createCustomStructure(structures.getCurrentStructureId(), Integer.parseInt(dimX.getText()), Integer.parseInt(dimY.getText()), Integer.parseInt(dimZ.getText()));
+	    			showCubeVars();
+	    			disableCubeVars();
+	    		}else if (structures.getCurrentStructureId() == structures.CUSTOM_PYRAMID) {
+	    			structures.createCustomStructure(structures.getCurrentStructureId(), 0, Integer.parseInt(baseSize.getText()), 0);
+	    			showPyramidVars();
+	    			disablePyramidVars();
+	    		}else if (structures.getCurrentStructureId() == structures.COIN_FLIP_DEMO) {
+	    			structures.createSimpleStructure(structures.getCurrentStructureId());
+	    		}else if (structures.getCurrentStructureId() ==  structures.BOWLING_DEMO) {
+	    			structures.createSimpleStructure(structures.getCurrentStructureId());
+	    		}else if (structures.getCurrentStructureId() == structures.CHESS_DEMO) {
+	    			structures.createSimpleStructure(structures.getCurrentStructureId());
+	    		}else if (structures.getCurrentStructureId() == structures.VEHICLE_DEMO) {
+	    			structures.createSimpleStructure(structures.getCurrentStructureId());
+	    		}
 	    	}
 	    });
 	    debugRender.addListener(new ClickListener(){
@@ -365,82 +267,62 @@ public class Overlay{
 	    	}
 	    });
 	    
-	    selectBox.addListener(new ChangeListener(){
+	    getSelectBox().addListener(new ChangeListener(){
 			public void changed(ChangeEvent arg0, Actor arg1) {
-				if(selectBox.getSelected()=="5x5 Cube"){
-					psGame.resetCamera();
-					flipCoin.setVisible(false);
-					hideCubeVars();
-					hidePyramidVars();
-					psGame.ClearWorld();
-					psGame.CreateCubeOfCubes();
-				}else if(selectBox.getSelected()=="Pyramid"){
-					psGame.resetCamera();
-					flipCoin.setVisible(false);
-					hidePyramidVars();
-					hideCubeVars();
-					psGame.ClearWorld();
-					psGame.CreateCubePyramid();
-				}else if(selectBox.getSelected()=="Bowling Alley"){
-					psGame.resetCamera();
-					flipCoin.setVisible(false);
-					hidePyramidVars();
-					hideCubeVars();
-					psGame.ClearWorld();
-					psGame.CreateBowlingAlley();
-				}else if(selectBox.getSelected()=="Custom Cube"){
-					psGame.resetCamera();
-					flipCoin.setVisible(false);
-					hidePyramidVars();
-					showCubeVars();
-				}else if(selectBox.getSelected()=="Custom Pyramid"){
-					psGame.resetCamera();
-					flipCoin.setVisible(false);
-					hideCubeVars();
-					showPyramidVars();
-				}else if(selectBox.getSelected()=="Coin Flip"){
-					hidePyramidVars();
-					hideCubeVars();
-					flipCoin.setVisible(true);
-					psGame.ClearWorld();
-					psGame.CreateCoinFlip();
-					
-				}else if(selectBox.getSelected()=="Chess Game"){
-					psGame.resetCamera();
-					hidePyramidVars();
-					hideCubeVars();
-					flipCoin.setVisible(false);
-					psGame.ClearWorld();
-					psGame.chessGame();
+				if(getSelectBox().getSelected().equalsIgnoreCase("5x5 Cube")){
+					structures.setCurrentStructureId(structures.DEFAULT_CUBE);
+					hideMiscVars(structures.getCurrentStructureId());
+					structures.createSimpleStructure(structures.getCurrentStructureId());
+				}else if(getSelectBox().getSelected().equalsIgnoreCase("Pyramid")){
+					structures.setCurrentStructureId(structures.DEFAULT_PYRAMID);
+					hideMiscVars(structures.getCurrentStructureId());
+					structures.createSimpleStructure(structures.getCurrentStructureId());
+				}else if(getSelectBox().getSelected().equalsIgnoreCase("Bowling Alley")){
+					structures.setCurrentStructureId(structures.BOWLING_DEMO);
+					hideMiscVars(structures.getCurrentStructureId());
+					structures.createSimpleStructure(structures.getCurrentStructureId());
+				}else if(getSelectBox().getSelected().equalsIgnoreCase("Custom Cube")){
+					structures.setCurrentStructureId(structures.CUSTOM_CUBE);
+					hideMiscVars(structures.getCurrentStructureId());
+				}else if(getSelectBox().getSelected().equalsIgnoreCase("Custom Pyramid")){
+					structures.setCurrentStructureId(structures.CUSTOM_PYRAMID);
+					hideMiscVars(structures.getCurrentStructureId());
+				}else if(getSelectBox().getSelected().equalsIgnoreCase("Coin Flip")){
+					structures.setCurrentStructureId(structures.COIN_FLIP_DEMO);
+					hideMiscVars(structures.getCurrentStructureId());
+					structures.createSimpleStructure(structures.getCurrentStructureId());					
+				}else if(getSelectBox().getSelected().equalsIgnoreCase("Chess Game")){
+					structures.setCurrentStructureId(structures.CHESS_DEMO);
+					hideMiscVars(structures.getCurrentStructureId());
+					structures.createSimpleStructure(structures.getCurrentStructureId());
+				}else if (getSelectBox().getSelected().equalsIgnoreCase("Vehicle")){
+					structures.setCurrentStructureId(structures.VEHICLE_DEMO);
+					hideMiscVars(structures.getCurrentStructureId());
+					structures.createSimpleStructure(structures.getCurrentStructureId());
 				}
 			}
 	    });
 	    
 	    customCube.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
-	    		psGame.ClearWorld();
-	    		psGame.CustomCubeOfCubes(Integer.parseInt(dimX.getText()), Integer.parseInt(dimY.getText()), Integer.parseInt(dimZ.getText()));
-	    		hideCubeVars();
-	    		
-	    		
+	    		structures.createCustomStructure(structures.getCurrentStructureId(), Integer.parseInt(dimX.getText()), Integer.parseInt(dimY.getText()), Integer.parseInt(dimZ.getText()));
+	    		disableCubeVars();
 	    	}
 	    });
 	    
 	    customPyramid.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
-	    		psGame.ClearWorld();
-	    		psGame.CustomPyramidOfCubes(Integer.parseInt(baseSize.getText()));
-	    		hidePyramidVars();
+	    		structures.createCustomStructure(structures.getCurrentStructureId(), 0, Integer.parseInt(baseSize.getText()), 0);
+	    		disablePyramidVars();
 				
 	    	}
 	    });
 	    
 	    flipCoin.addListener(new ClickListener(){
 	    	public void clicked(InputEvent event, float x, float y){
-	    		psGame.FlipCoin();
+	    		structures.FlipCoin();
 	    	}
 	    });
-	    
 	    stage.addActor(cameraInfo);
 	    stage.addActor(fps);
 	    stage.addActor(importModel);
@@ -449,9 +331,9 @@ public class Overlay{
 	    stage.addActor(stepSpeed);
 	    stage.addActor(cLabel);
 	    stage.addActor(resetWorld);
-	    stage.addActor(cubeCount);
+	    stage.addActor(cubeCounter);
 	    stage.addActor(debugRender);
-	    stage.addActor(selectBox);
+	    stage.addActor(getSelectBox());
 	    stage.addActor(customCube);
 	    stage.addActor(cCubeDims);
 	    stage.addActor(dimX);
@@ -460,31 +342,27 @@ public class Overlay{
 	    stage.addActor(baseSize);
 	    stage.addActor(baseLab);
 	    stage.addActor(customPyramid);
-	    //stage.addActor(overlay.rSlider);
-	    //stage.addActor(overlay.gSlider);
-	    //stage.addActor(bSlider);
-	    //stage.addActor(overlay.rVal);
-	    //stage.addActor(overlay.gVal);
-	    //stage.addActor(bVal);
 	    stage.addActor(physSlider);
 	    stage.addActor(flipCoin);
 	    stage.addActor(controllerInfo);
     }
     
-    
-    //ArrayList<Object> objects = new ArrayList<Object>();
-    
     public void Draw(){
+    	
     	Camera cam = psGame.getCamera();
 		fps.setText("FPS: " + String.valueOf(Gdx.graphics.getFramesPerSecond()));
-		cameraInfo.setText("X: "+ cam.position.x + "\nY: " + cam.position.y + "\nZ: " + cam.position.z + "\n\nCurrent projectile: " + fName + "\nVehicleSpeed" );
+		if (psGame.carMode) {
+			cameraInfo.setText("X: "+ String.format("%.01f", cam.position.x) + "\nY: " + String.format("%.01f", cam.position.y) + "\nZ: " + String.format("%.01f", cam.position.z) + "\n\nCurrent projectile: " + fName + "\nVehicle Speed: " + String.format("%.0f", Math.abs(psGame.getVehicle().veh.getCurrentSpeedKmHour())) + " KM/H");
+		}else
+		cameraInfo.setText("X: "+ String.format("%.01f", cam.position.x) + "\nY: " + String.format("%.01f", cam.position.y) + "\nZ: " + String.format("%.01f", cam.position.z) + "\n\nCurrent projectile: " + fName);
+		if (psGame.carMode){
+			cubeCounter.setVisible(false);
+		}
 		
-		cubeCount.setText("Number of cubes: " + cubeCounter + "\n");
-		
-		if (psGame.bDebugRender == true){
-			cubeCount.setText(/*"Number of cubes: " + cubeCounter + "*/"Debug Render: True");
-		}else{
-			cubeCount.setText(/*"Number of cubes: " + cubeCounter + "*/"Debug Render: False");
+		if (psGame.bDebugRender == true && !psGame.carMode){
+			cubeCounter.setText("Number of objects: " + (psGame.getNumberOfObjects() - 1)  + "\n\nDebug Render: True");
+		}else if (psGame.bDebugRender == false && !psGame.carMode){
+			cubeCounter.setText("Number of objects: " + (psGame.getNumberOfObjects() - 1) + "\n\nDebug Render: False");
 		}
 		spriteBatch.begin();
 		stage.act(Math.min(Gdx.graphics.getDeltaTime(), 1 / 30f));
@@ -505,7 +383,49 @@ public class Overlay{
     	spriteBatch.dispose();
     }
     
+    public void hideMiscVars(int structure) {
+    	if (structure == structures.DEFAULT_CUBE) {
+    		flipCoin.setVisible(false);
+			hideCubeVars();
+			hidePyramidVars();
+    	}else if (structure == structures.DEFAULT_PYRAMID) {
+    		flipCoin.setVisible(false);
+			hidePyramidVars();
+			hideCubeVars();
+    	}else if (structure == structures.CUSTOM_CUBE) {
+    		System.out.println("Check 1");
+    		flipCoin.setVisible(false);
+			hidePyramidVars();
+			showCubeVars();
+    	}else if (structure == structures.CUSTOM_PYRAMID) {
+    		flipCoin.setVisible(false);
+			hideCubeVars();
+			showPyramidVars();
+    	}else if (structure == structures.COIN_FLIP_DEMO) { 
+    		flipCoin.setVisible(true);
+    		hideCubeVars();
+    		hidePyramidVars();
+    	}else if (structure == structures.CHESS_DEMO) {
+    		hidePyramidVars();
+			hideCubeVars();
+			flipCoin.setVisible(true);
+    	}else if (structure == structures.BOWLING_DEMO) {
+    		flipCoin.setVisible(false);
+			hidePyramidVars();
+			hideCubeVars();
+    	}else if (structure == structures.CHESS_DEMO) {
+    		hidePyramidVars();
+			hideCubeVars();
+			flipCoin.setVisible(false);
+    	}else if (structure == structures.VEHICLE_DEMO) {
+    		hideCubeVars();
+			hidePyramidVars();
+			flipCoin.setVisible(false);
+    	}
+    }
+    
     public void hidePyramidVars(){
+    	System.out.println("Check 2");
     	baseSize.setVisible(false);
 		baseLab.setVisible(false);
 		baseSize.setDisabled(true);
@@ -551,6 +471,7 @@ public class Overlay{
     }
     
     public void showCubeVars(){
+    	System.out.println("Check 3");
     	dimX.setVisible(true);
 		dimY.setVisible(true);
 		dimZ.setVisible(true);
@@ -564,4 +485,14 @@ public class Overlay{
     public Stage getStage(){
     	return stage;
     }
+
+	public SelectBox<String> getSelectBox() {
+		return selectBox;
+	}
+
+	public void setSelectBox(SelectBox<String> selectBox) {
+		this.selectBox = selectBox;
+	}
+    
+    
 }

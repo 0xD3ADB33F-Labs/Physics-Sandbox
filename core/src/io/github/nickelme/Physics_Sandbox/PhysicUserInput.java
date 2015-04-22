@@ -16,6 +16,8 @@ public class PhysicUserInput implements InputProcessor {
 	
 	private ObjectThrower objThrow;
 	
+	private Structures structures;
+	
 	private boolean bIsDragging = false;
 	
 	private JFileChooser filechoose;
@@ -32,6 +34,7 @@ public class PhysicUserInput implements InputProcessor {
 	public PhysicUserInput(PhysicsSandboxGame curGame){
 		psGame = curGame;
 		objThrow = new ObjectThrower(psGame);
+		structures = new Structures(curGame);
 		filechoose = new JFileChooser();
 	}
 	
@@ -66,22 +69,22 @@ public class PhysicUserInput implements InputProcessor {
 			return true;
 			
 		case Keys.F5:
-			psGame.ClearWorld();
-			psGame.CreateCubeOfCubes();
+			structures.ClearWorld();
+			structures.CreateCubeOfCubes();
 			return true;
 			
 		case Keys.F6:
-			psGame.ClearWorld();
-			psGame.CreateCubePyramid();
+			structures.ClearWorld();
+			structures.CreateCubePyramid();
 			return true;
 			
 		case Keys.F7:
-			psGame.ClearWorld();
-			psGame.CreateBowlingAlley();
+			structures.ClearWorld();
+			structures.CreateBowlingAlley();
 			return true;
 			
 		case Keys.F8:
-			psGame.ClearWorld();
+			structures.ClearWorld();
 //			PrimitiveCube cube = new PrimitiveCube(new Vector3(1,1,1), new Matrix4(new Vector3(0,(2.0f),0), new Quaternion(), new Vector3(1,1,1)));
 			for(int i = 0; i < 10;i++){
 				PrimitiveCube cube = new PrimitiveCube(new Vector3(1,1,1), new Matrix4(new Vector3(i,1.5f, 0), new Quaternion(), new Vector3(1,1,1)));
@@ -96,28 +99,33 @@ public class PhysicUserInput implements InputProcessor {
 			return true;
 			
 		case Keys.B:
-			psGame.Explode(new Vector3(40,40,40), 1000.0f, 100000.0f);
+			structures.Explode(new Vector3(40,40,40), 1000.0f, 100000.0f);
 			return true;
 			
 		case Keys.F:
-			psGame.FlipCoin();
+			structures.FlipCoin();
 			return true;
 			
 		case Keys.F3:
-			psGame.ClearWorld();
-			psGame.CarTest();
-			
+			structures.ClearWorld();
+			structures.VehicleDemo();
+			return true;
 		case Keys.F9:
+			System.out.println((int)(Math.random() * ((14 + 1))));
 			//psGame.mNetman.StartServer((short)7472);
 			return true;
 			
 		case Keys.F10:
 			//psGame.mNetman.ConnectToHost("127.0.0.1");
 			return true;
+		case Keys.ALT_LEFT:
+			
 		}
 		return false;
 	}
-
+	
+	
+	
 	@Override
 	public boolean keyUp(int keycode) {
 		return false;
